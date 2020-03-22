@@ -43,6 +43,14 @@ namespace lox
 
         private static int Run(string code)
         {
+            var scanner = new Scanner(code);
+            var tokens = scanner.ScanTokens();
+
+            for(int i = 0; i < tokens.Count; i++)
+            {
+                WriteLine(tokens[i]);
+            }
+
             return EX_OK;
         }
 
