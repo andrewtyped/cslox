@@ -46,7 +46,9 @@ namespace lox
             var scanner = new Scanner(code);
             var tokens = scanner.ScanTokens();
 
-            for(int i = 0; i < tokens.Count; i++)
+            for (int i = 0;
+                 i < tokens.Count;
+                 i++)
             {
                 WriteLine(tokens[i]);
             }
@@ -57,7 +59,14 @@ namespace lox
         private static int RunFile(string filePath)
         {
             var bytes = File.ReadAllBytes(filePath);
-            return Run(Encoding.UTF8.GetString(bytes));
+            var returnCode = Run(Encoding.UTF8.GetString(bytes));
+
+            if (hadError)
+            {
+                return EX_DATAERR;
+            }
+
+            return returnCode;
         }
 
         private static int RunPrompt()
@@ -66,8 +75,30 @@ namespace lox
             {
                 Write("> ");
                 var code = ReadLine();
-                Run(code);
+                _ = Run(code);
+
+                //Reset error. Lox errors shouldn't crash the user's REPL.
+                hadError = false;
             }
+        }
+
+        #endregion
+
+        #region Error Handling
+
+        private static bool hadError;
+
+        private static void Error(int line, string message)
+        {
+            Report(line,
+                   "",
+                   message);
+        }
+
+        private static void Report(int line, string where, string message)
+        {
+            WriteLine($"[line {line}] Error: {where}: {message}");
+            hadError = true;
         }
 
         #endregion

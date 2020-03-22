@@ -6,14 +6,25 @@
     /// </summary>
     public static class ExitCodes
     {
+        #region Constants
+
+        /// <summary>
+        /// The input data was incorrect in some way. This should only be used for user's data
+        /// and not system files.
+        /// </summary>
+        public const int EX_DATAERR = 65;
+
         /// <summary>
         /// The command executed successfully.
         /// </summary>
         public const int EX_OK = 0;
 
         /// <summary>
-        /// The command was used incorrectly, e.g., with the wrong number of arguments, a bad flag, a bad syntax in a parameter, etc.
+        /// The command was used incorrectly, e.g., with the wrong number of arguments, a bad
+        /// flag, a bad syntax in a parameter, etc.
         /// </summary>
         public const int EX_USAGE = 64;
+
+        #endregion
     }
 }
