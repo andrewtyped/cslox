@@ -1,12 +1,67 @@
-﻿using System;
+﻿using System.IO;
+using System.Text;
+
+using static System.Console;
+
+using static lox.constants.ExitCodes;
 
 namespace lox
 {
     public class Lox
     {
-        static void Main(string[] args)
+        #region Class Methods
+
+        /// <summary>
+        /// Entry point for the lox interpreter. Runs code from a script file or from the command prompt as a REPL.
+        /// </summary>
+        /// <param name="args">0 or 1 string. If 0 args are passed, lox is run as a REPL, reading and executing
+        /// one lox command at a time from the command prompt. The user may also pass a path to a file containing
+        /// lox code.</param>
+        /// <returns>
+        /// If running as a REPL, the program does not return until the user exits the program forcefully with Ctrl + C
+        /// or by killing the process.
+        ///
+        /// If interpreting a script file, cslox returns one of these codes:
+        /// 0 - The program is interepreted successfully.
+        /// 64 - Too many arguments passed to cslox.
+        /// </returns>
+        private static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if (args.Length > 1)
+            {
+                WriteLine("Usage: cslox [script]");
+                return EX_USAGE;
+            }
+
+            if (args.Length == 1)
+            {
+                return RunFile(args[0]);
+            }
+
+            return RunPrompt();
         }
+
+        private static int Run(string code)
+        {
+            return EX_OK;
+        }
+
+        private static int RunFile(string filePath)
+        {
+            var bytes = File.ReadAllBytes(filePath);
+            return Run(Encoding.UTF8.GetString(bytes));
+        }
+
+        private static int RunPrompt()
+        {
+            for (;;)
+            {
+                Write("> ");
+                var code = ReadLine();
+                Run(code);
+            }
+        }
+
+        #endregion
     }
 }
