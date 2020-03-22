@@ -13,5 +13,15 @@ namespace lox.test
             Assert.AreEqual("test",
                             scanner.Source);
         }
+
+        [TestMethod]
+        public void ScannerProducesEmptyTokenList()
+        {
+            var scanner = new Scanner("test");
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(0,
+                            tokens.Count);
+        }
     }
 }

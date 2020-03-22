@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace lox
 {
@@ -9,6 +7,18 @@ namespace lox
     /// </summary>
     public class Scanner
     {
+        #region Constructors
+
+        /// <summary>
+        /// Create a new instance.
+        /// </summary>
+        /// <param name="source">The Lox code to tokenize.</param>
+        public Scanner(string source) => this.Source = source;
+
+        #endregion
+
+        #region Instance Properties
+
         /// <summary>
         /// Gets the Lox code to tokenize.
         /// </summary>
@@ -17,10 +27,21 @@ namespace lox
             get;
         }
 
+        #endregion
+
+        #region Instance Methods
+
         /// <summary>
-        /// Create a new instance.
+        /// Reads the content of <see cref="Source"/> to produce a list of Lox tokens.
         /// </summary>
-        /// <param name="source">The Lox code to tokenize.</param>
-        public Scanner(string source) => this.Source = source;
+        /// <returns>The list of tokens read from <see cref="Source"/></returns>
+        public IReadOnlyList<Token> ScanTokens()
+        {
+            var tokens = new List<Token>();
+
+            return tokens;
+        }
+
+        #endregion
     }
 }
