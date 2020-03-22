@@ -2,7 +2,7 @@
 
 namespace lox
 {
-    class Lox
+    public class Lox
     {
         static void Main(string[] args)
         {
