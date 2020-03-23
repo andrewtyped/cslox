@@ -79,5 +79,14 @@ namespace lox
         }
 
         #endregion
+
+        #region Instance Methods
+
+        public override string ToString()
+        {
+            return $"{this.Type} {this.Lexeme} {this.Literal ?? ""}";
+        }
+
+        #endregion
     }
 }
