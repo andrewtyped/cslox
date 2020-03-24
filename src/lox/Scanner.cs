@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static lox.constants.TokenType;
 
 namespace lox
 {
@@ -7,6 +8,18 @@ namespace lox
     /// </summary>
     public class Scanner
     {
+        #region Fields
+
+        private readonly List<Token> tokens = new List<Token>();
+
+        private int current = 0;
+
+        private int line = 1;
+
+        private int start;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -37,10 +50,31 @@ namespace lox
         /// <returns>The list of tokens read from <see cref="Source"/></returns>
         public IReadOnlyList<Token> ScanTokens()
         {
-            var tokens = new List<Token>();
+            if (this.tokens.Count > 0)
+            {
+                return this.tokens;
+            }
 
-            return tokens;
+            while (!this.IsAtEnd())
+            {
+                //TODO Section 4.4
+                this.start = this.current;
+                this.ScanToken();
+            }
+
+            tokens.Add(new Token("",
+                                 1,
+                                 EOF));
+
+            return this.tokens;
         }
+
+        private void ScanToken()
+        {
+            this.current++;
+        }
+
+        private bool IsAtEnd() => this.current >= this.Source.Length;
 
         #endregion
     }
