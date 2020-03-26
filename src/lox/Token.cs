@@ -1,42 +1,85 @@
-﻿using lox.constants;
+﻿using System;
+
+using lox.constants;
 
 namespace lox
 {
     /// <summary>
     /// Represents a unit of Lox syntax.
     /// </summary>
-    public sealed class Token
+    public struct Token
     {
         #region Constructors
+
+        ///// <summary>
+        ///// Create a non-literal token.
+        ///// </summary>
+        ///// <param name="lexeme">The text of the token.</param>
+        ///// <param name="line">The line on which the token appears.</param>
+        ///// <param name="type">The type of token represented by the lexeme.</param>
+        //public Token(ReadOnlySpan<char> lexeme,
+        //             int line,
+        //             TokenType type)
+        //{
+        //    this.Lexeme = lexeme;
+        //    this.Line = line;
+        //    this.Type = type;
+        //    this.Literal = null;
+        //}
+
+        ///// <summary>
+        ///// Create a literal token.
+        ///// </summary>
+        ///// <param name="lexeme">The text of the token.</param>
+        ///// <param name="line">The line on which the token appears.</param>
+        ///// <param name="literal">The literal value of the token (string, number, identifier).</param>
+        ///// <param name="type">The type of token represented by the lexeme.</param>
+        //public Token(ReadOnlySpan<char> lexeme,
+        //             int line,
+        //             object literal,
+        //             TokenType type)
+        //{
+        //    this.Lexeme = lexeme;
+        //    this.Line = line;
+        //    this.Literal = literal;
+        //    this.Type = type;
+        //}
 
         /// <summary>
         /// Create a non-literal token.
         /// </summary>
-        /// <param name="lexeme">The text of the token.</param>
+        /// <param name="lexemeStart">The start character index of the lexeme text in the source code</param>
+        /// <param name="lexemeEnd">The end character index of the lexeme text in the source code.</param>
         /// <param name="line">The line on which the token appears.</param>
         /// <param name="type">The type of token represented by the lexeme.</param>
-        public Token(string lexeme,
+        public Token(int lexemeStart,
+                     int lexemeEnd,
                      int line,
                      TokenType type)
         {
-            this.Lexeme = lexeme;
+            this.LexemeStart = lexemeStart;
+            this.LexemeEnd = lexemeEnd;
             this.Line = line;
             this.Type = type;
+            this.Literal = null;
         }
 
         /// <summary>
         /// Create a literal token.
         /// </summary>
-        /// <param name="lexeme">The text of the token.</param>
+        /// <param name="lexemeStart">The start character index of the lexeme text in the source code</param>
+        /// <param name="lexemeEnd">The end character index of the lexeme text in the source code.</param>
         /// <param name="line">The line on which the token appears.</param>
         /// <param name="literal">The literal value of the token (string, number, identifier).</param>
         /// <param name="type">The type of token represented by the lexeme.</param>
-        public Token(string lexeme,
+        public Token(int lexemeStart,
+                     int lexemeEnd,
                      int line,
                      object literal,
                      TokenType type)
         {
-            this.Lexeme = lexeme;
+            this.LexemeStart = lexemeStart;
+            this.LexemeEnd = lexemeEnd;
             this.Line = line;
             this.Literal = literal;
             this.Type = type;
@@ -47,9 +90,25 @@ namespace lox
         #region Instance Properties
 
         /// <summary>
-        /// Get the text of the token as it appeared in source code.
+        /// Get the end character index of the lexeme text in source code.
         /// </summary>
-        public string Lexeme
+        public int LexemeEnd
+        {
+            get;
+        }
+
+        ///// <summary>
+        ///// Get the text of the token as it appeared in source code.
+       // /// </summary>
+        //public ReadOnlySpan<char> Lexeme
+        //{
+        //get;
+        //}
+
+        /// <summary>
+        /// Get the start index of the lexeme text in source code.
+        /// </summary>
+        public int LexemeStart
         {
             get;
         }
@@ -82,9 +141,15 @@ namespace lox
 
         #region Instance Methods
 
-        public override string ToString()
+        public ReadOnlySpan<char> GetLexeme(in ReadOnlySpan<char> source)
         {
-            return $"{this.Type} {this.Lexeme} {this.Literal ?? ""}";
+            return source.Slice(this.LexemeStart,
+                                this.LexemeEnd);
+        }
+
+        public string ToString(in ReadOnlySpan<char> source)
+        {
+            return $"{this.Type} {this.GetLexeme(source).ToString()} {this.Literal ?? ""}";
         }
 
         #endregion
