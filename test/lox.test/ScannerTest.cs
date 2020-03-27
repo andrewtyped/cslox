@@ -100,8 +100,10 @@ namespace lox.test
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
 
-            Assert.AreEqual(0,
+            Assert.AreEqual(1,
                             tokens.Count);
+            this.AssertTokenEquality(TokenType.EOF,
+                                     tokens[0]);
         }
 
         private void AssertTokenEquality(TokenType expectedTokenType,
