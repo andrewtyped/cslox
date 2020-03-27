@@ -104,12 +104,31 @@ namespace lox
 
         private bool IsAtEnd(in SpStr source) => this.current >= source.Length;
 
+        private bool Match(char expected, in SpStr source)
+        {
+            if (this.IsAtEnd(source))
+            {
+                return false;
+            }
+
+            if(source[this.current] != expected)
+            {
+                return false;
+            }
+
+            this.current++;
+            return true;
+        }
+
         private void ScanToken(in SpStr source)
         {
             char c = this.Advance(source);
 
             switch (c)
             {
+                //Single Characters
+                //=================
+
                 case '(':
                     this.AddToken(LEFT_PAREN);
                     break;
@@ -139,6 +158,34 @@ namespace lox
                     break;
                 case '*':
                     this.AddToken(STAR);
+                    break;
+
+                //Operators
+                //=========
+
+                case '!':
+                    this.AddToken(this.Match('=',
+                                             source)
+                                      ? BANG_EQUAL
+                                      : BANG);
+                    break;
+                case '=':
+                    this.AddToken(this.Match('=',
+                                             source)
+                                      ? EQUAL_EQUAL
+                                      : EQUAL);
+                    break;
+                case '<':
+                    this.AddToken(this.Match('=',
+                                             source)
+                                      ? LESS_EQUAL
+                                      : LESS);
+                    break;
+                case '>':
+                    this.AddToken(this.Match('=',
+                                             source)
+                                      ? GREATER_EQUAL
+                                      : GREATER);
                     break;
                 default:
                     Lox.Error(line,

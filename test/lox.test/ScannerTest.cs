@@ -35,6 +35,22 @@ namespace lox.test
                                      source);
         }
 
+        [TestMethod]
+        public void ScannerHandlesOperators()
+        {
+            var source = "=!<>!===<=>=";
+
+            this.AssertTokenSequence(source,
+                                     (TokenType.EQUAL, "=", 1),
+                                     (TokenType.BANG, "!", 1),
+                                     (TokenType.LESS, "<", 1),
+                                     (TokenType.GREATER, ">", 1),
+                                     (TokenType.BANG_EQUAL, "!=", 1),
+                                     (TokenType.EQUAL_EQUAL, "==", 1),
+                                     (TokenType.LESS_EQUAL, "<=", 1),
+                                     (TokenType.GREATER_EQUAL, ">=", 1));
+        }
+
         [DataTestMethod]
         [DataRow(0,
                  TokenType.LEFT_PAREN,
@@ -143,6 +159,31 @@ namespace lox.test
                             actualToken.Literal);
             Assert.AreEqual(expectedLine,
                             actualToken.Line);
+        }
+
+        private void AssertTokenSequence(string source,
+                                         params (TokenType type, string lexeme, int line)[] expectedTokens)
+        {
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(expectedTokens.Length,
+                            tokens.Count - 1, //Ignore EOF
+                            "Tokens length");
+
+            for (int i = 0;
+                 i < expectedTokens.Length;
+                 i++)
+            {
+                var token = tokens[i];
+                var expectedToken = expectedTokens[i];
+
+                this.AssertTokenEquality(expectedToken.type,
+                                         expectedToken.lexeme,
+                                         expectedToken.line,
+                                         token,
+                                         source);
+            }
         }
 
         #endregion
