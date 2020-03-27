@@ -21,15 +21,18 @@ namespace lox.test
         [TestMethod]
         public void ScannerDetectsEndOfFile()
         {
-            var scanner = new Scanner("");
+            var source = "";
+            var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
 
             Assert.AreEqual(1,
                             tokens.Count);
+
             this.AssertTokenEquality(TokenType.EOF,
                                      "",
                                      1,
-                                     tokens[0]);
+                                     tokens[0],
+                                     source);
         }
 
         private void AssertTokenEquality(TokenType expectedTokenType,
@@ -42,25 +45,28 @@ namespace lox.test
         private void AssertTokenEquality(TokenType expectedTokenType,
                                          string expectedLexeme,
                                          int expectedLine,
-                                         Token actualToken)
+                                         Token actualToken,
+                                         string source)
         {
             this.AssertTokenEquality(expectedTokenType,
                                      expectedLexeme,
                                      null,
                                      expectedLine,
-                                     actualToken);
+                                     actualToken,
+                                     source);
         }
 
         private void AssertTokenEquality(TokenType expectedTokenType,
                                          string expectedLexeme,
                                          object? expectedLiteral,
                                          int expectedLine,
-                                         Token actualToken)
+                                         Token actualToken,
+                                         string source)
         {
             Assert.AreEqual(expectedTokenType,
                             actualToken.Type);
             Assert.AreEqual(expectedLexeme,
-                            actualToken.Lexeme);
+                            actualToken.GetLexeme(source).ToString());
             Assert.AreEqual(expectedLiteral,
                             actualToken.Literal);
             Assert.AreEqual(expectedLine,

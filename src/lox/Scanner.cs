@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+
+using lox.constants;
+
 using static lox.constants.TokenType;
+
+using SpStr = System.ReadOnlySpan<char>;
 
 namespace lox
 {
@@ -12,9 +18,9 @@ namespace lox
 
         private readonly List<Token> tokens = new List<Token>();
 
-        private int current = 0;
+        private int current;
 
-        private int line = 1;
+        private readonly int line = 1;
 
         private int start;
 
@@ -55,26 +61,91 @@ namespace lox
                 return this.tokens;
             }
 
-            while (!this.IsAtEnd())
+            var source = this.Source.AsSpan();
+
+            while (!this.IsAtEnd(source))
             {
-                //TODO Section 4.4
+                //We are at the beginning of the next lexeme.
                 this.start = this.current;
-                this.ScanToken();
+                this.ScanToken(source);
             }
 
-            tokens.Add(new Token("",
-                                 1,
-                                 EOF));
+            this.tokens.Add(new Token(this.current,
+                                      this.current,
+                                      1,
+                                      EOF));
 
             return this.tokens;
         }
 
-        private void ScanToken()
+        private void AddToken(TokenType tokenType)
         {
-            this.current++;
+            this.tokens.Add(new Token(this.start,
+                                      this.current,
+                                      this.line,
+                                      tokenType));
         }
 
-        private bool IsAtEnd() => this.current >= this.Source.Length;
+        private void AddToken(TokenType tokenType,
+                              object literal)
+        {
+            this.tokens.Add(new Token(this.start,
+                                      this.current,
+                                      this.line,
+                                      literal,
+                                      tokenType));
+        }
+
+        private char Advance(in SpStr source)
+        {
+            this.current++;
+            return source[this.current - 1];
+        }
+
+        private bool IsAtEnd(in SpStr source) => this.current >= source.Length;
+
+        private void ScanToken(in SpStr source)
+        {
+            char c = this.Advance(source);
+
+            switch (c)
+            {
+                case '(':
+                    this.AddToken(LEFT_PAREN);
+                    break;
+                case ')':
+                    this.AddToken(RIGHT_PAREN);
+                    break;
+                case '{':
+                    this.AddToken(LEFT_BRACE);
+                    break;
+                case '}':
+                    this.AddToken(RIGHT_BRACE);
+                    break;
+                case ',':
+                    this.AddToken(COMMA);
+                    break;
+                case '.':
+                    this.AddToken(DOT);
+                    break;
+                case '-':
+                    this.AddToken(MINUS);
+                    break;
+                case '+':
+                    this.AddToken(PLUS);
+                    break;
+                case ';':
+                    this.AddToken(SEMICOLON);
+                    break;
+                case '*':
+                    this.AddToken(STAR);
+                    break;
+            }
+
+            ;
+
+            this.current++;
+        }
 
         #endregion
     }
