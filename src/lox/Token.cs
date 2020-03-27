@@ -144,7 +144,7 @@ namespace lox
         public ReadOnlySpan<char> GetLexeme(in ReadOnlySpan<char> source)
         {
             return source.Slice(this.LexemeStart,
-                                this.LexemeEnd);
+                                this.LexemeEnd - this.LexemeStart);
         }
 
         public string ToString(in ReadOnlySpan<char> source)

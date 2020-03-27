@@ -28,6 +28,19 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void CanGetLexemeFromTokenWithSource()
+        {
+            var token = new Token(20,
+                                  23,
+                                  1,
+                                  FOR);
+
+            Assert.AreEqual("for",
+                            token.GetLexeme("all the wine is all for me")
+                                 .ToString());
+        }
+
+        [TestMethod]
         public void CanConstructLiteralToken()
         {
             var token = new Token(1,
