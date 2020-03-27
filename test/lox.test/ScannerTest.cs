@@ -51,62 +51,22 @@ namespace lox.test
                                      (TokenType.GREATER_EQUAL, ">=", 1));
         }
 
-        [DataTestMethod]
-        [DataRow(0,
-                 TokenType.LEFT_PAREN,
-                 "(",
-                 1)]
-        [DataRow(1,
-                 TokenType.RIGHT_PAREN,
-                 ")",
-                 1)]
-        [DataRow(2,
-                 TokenType.LEFT_BRACE,
-                 "{",
-                 1)]
-        [DataRow(3,
-                 TokenType.RIGHT_BRACE,
-                 "}",
-                 1)]
-        [DataRow(4,
-                 TokenType.COMMA,
-                 ",",
-                 1)]
-        [DataRow(5,
-                 TokenType.DOT,
-                 ".",
-                 1)]
-        [DataRow(6,
-                 TokenType.MINUS,
-                 "-",
-                 1)]
-        [DataRow(7,
-                 TokenType.PLUS,
-                 "+",
-                 1)]
-        [DataRow(8,
-                 TokenType.SEMICOLON,
-                 ";",
-                 1)]
-        [DataRow(9,
-                 TokenType.STAR,
-                 "*",
-                 1)]
-        public void ScannerHandlesSingleTokenCharacters(int tokenIndex,
-                                                        TokenType expectedToken,
-                                                        string expectedLexeme,
-                                                        int expectedLine)
+        [TestMethod]
+        public void ScannerHandlesSingleTokenCharacters()
         {
             var source = "(){},.-+;*";
-            var scanner = new Scanner(source);
 
-            var tokens = scanner.ScanTokens();
-
-            this.AssertTokenEquality(expectedToken,
-                                     expectedLexeme,
-                                     expectedLine,
-                                     tokens[tokenIndex],
-                                     source);
+            this.AssertTokenSequence(source,
+                                     (TokenType.LEFT_PAREN, "(", 1),
+                                     (TokenType.RIGHT_PAREN, ")", 1),
+                                     (TokenType.LEFT_BRACE, "{", 1),
+                                     (TokenType.RIGHT_BRACE, "}", 1),
+                                     (TokenType.COMMA, ",", 1),
+                                     (TokenType.DOT, ".", 1),
+                                     (TokenType.MINUS, "-", 1),
+                                     (TokenType.PLUS, "+", 1),
+                                     (TokenType.SEMICOLON, ";", 1),
+                                     (TokenType.STAR, "*", 1));
         }
 
         [TestMethod]
