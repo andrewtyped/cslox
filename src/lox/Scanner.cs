@@ -187,6 +187,9 @@ namespace lox
                                       ? GREATER_EQUAL
                                       : GREATER);
                     break;
+                case '/':
+                    this.AddToken(SLASH);
+                    break;
                 default:
                     Lox.Error(line,
                               $"Unexpected character {c}.");

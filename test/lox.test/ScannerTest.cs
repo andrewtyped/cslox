@@ -38,7 +38,7 @@ namespace lox.test
         [TestMethod]
         public void ScannerHandlesOperators()
         {
-            var source = "=!<>!===<=>=";
+            var source = "=!<>!===<=>=/";
 
             this.AssertTokenSequence(source,
                                      (TokenType.EQUAL, "=", 1),
@@ -48,7 +48,8 @@ namespace lox.test
                                      (TokenType.BANG_EQUAL, "!=", 1),
                                      (TokenType.EQUAL_EQUAL, "==", 1),
                                      (TokenType.LESS_EQUAL, "<=", 1),
-                                     (TokenType.GREATER_EQUAL, ">=", 1));
+                                     (TokenType.GREATER_EQUAL, ">=", 1),
+                                     (TokenType.SLASH, "/", 1));
         }
 
         [TestMethod]
