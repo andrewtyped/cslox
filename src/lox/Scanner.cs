@@ -120,6 +120,16 @@ namespace lox
             return true;
         }
 
+        private char Peek(in SpStr source)
+        {
+            if (this.IsAtEnd(source))
+            {
+                return '\0';
+            }
+
+            return source[this.current];
+        }
+
         private void ScanToken(in SpStr source)
         {
             char c = this.Advance(source);
@@ -188,7 +198,19 @@ namespace lox
                                       : GREATER);
                     break;
                 case '/':
-                    this.AddToken(SLASH);
+                    if (this.Match('/', source))
+                    {
+                        //Discard comments
+                        while(this.Peek(source) != '\n' && !this.IsAtEnd(source))
+                        {
+                            this.Advance(source);
+                        }
+                    }
+                    else
+                    {
+                        this.AddToken(SLASH);
+                    }
+
                     break;
                 default:
                     Lox.Error(line,

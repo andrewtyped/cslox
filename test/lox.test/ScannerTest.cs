@@ -71,6 +71,19 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void ScannerHandlesComments()
+        {
+            var source = "//This is a comment and symbols to not parse / * ( )";
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(1,
+                            tokens.Count);
+            this.AssertTokenEquality(TokenType.EOF,
+                                     tokens[0]);
+        }
+
+        [TestMethod]
         public void ScannerHandlesUnrecognizedCharacters()
         {
             var source = "###";
