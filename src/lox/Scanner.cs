@@ -140,11 +140,11 @@ namespace lox
                 case '*':
                     this.AddToken(STAR);
                     break;
+                default:
+                    Lox.Error(line,
+                              $"Unexpected character {c}.");
+                    break;
             }
-
-            ;
-
-            this.current++;
         }
 
         #endregion

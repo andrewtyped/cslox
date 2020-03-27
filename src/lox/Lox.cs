@@ -88,7 +88,7 @@ namespace lox
 
         private static bool hadError;
 
-        private static void Error(int line, string message)
+        public static void Error(int line, string message)
         {
             Report(line,
                    "",

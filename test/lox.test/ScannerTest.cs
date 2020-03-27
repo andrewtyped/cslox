@@ -35,6 +35,75 @@ namespace lox.test
                                      source);
         }
 
+        [DataTestMethod]
+        [DataRow(0,
+                 TokenType.LEFT_PAREN,
+                 "(",
+                 1)]
+        [DataRow(1,
+                 TokenType.RIGHT_PAREN,
+                 ")",
+                 1)]
+        [DataRow(2,
+                 TokenType.LEFT_BRACE,
+                 "{",
+                 1)]
+        [DataRow(3,
+                 TokenType.RIGHT_BRACE,
+                 "}",
+                 1)]
+        [DataRow(4,
+                 TokenType.COMMA,
+                 ",",
+                 1)]
+        [DataRow(5,
+                 TokenType.DOT,
+                 ".",
+                 1)]
+        [DataRow(6,
+                 TokenType.MINUS,
+                 "-",
+                 1)]
+        [DataRow(7,
+                 TokenType.PLUS,
+                 "+",
+                 1)]
+        [DataRow(8,
+                 TokenType.SEMICOLON,
+                 ";",
+                 1)]
+        [DataRow(9,
+                 TokenType.STAR,
+                 "*",
+                 1)]
+        public void ScannerHandlesSingleTokenCharacters(int tokenIndex,
+                                                        TokenType expectedToken,
+                                                        string expectedLexeme,
+                                                        int expectedLine)
+        {
+            var source = "(){},.-+;*";
+            var scanner = new Scanner(source);
+
+            var tokens = scanner.ScanTokens();
+
+            this.AssertTokenEquality(expectedToken,
+                                     expectedLexeme,
+                                     expectedLine,
+                                     tokens[tokenIndex],
+                                     source);
+        }
+
+        [TestMethod]
+        public void ScannerHandlesUnrecognizedCharacters()
+        {
+            var source = "###";
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(0,
+                            tokens.Count);
+        }
+
         private void AssertTokenEquality(TokenType expectedTokenType,
                                          Token actualToken)
         {
@@ -66,7 +135,8 @@ namespace lox.test
             Assert.AreEqual(expectedTokenType,
                             actualToken.Type);
             Assert.AreEqual(expectedLexeme,
-                            actualToken.GetLexeme(source).ToString());
+                            actualToken.GetLexeme(source)
+                                       .ToString());
             Assert.AreEqual(expectedLiteral,
                             actualToken.Literal);
             Assert.AreEqual(expectedLine,
