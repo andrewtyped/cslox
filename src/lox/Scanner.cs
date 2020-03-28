@@ -104,6 +104,11 @@ namespace lox
 
         private bool IsAtEnd(in SpStr source) => this.current >= source.Length;
 
+        private bool IsDigit(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
         private bool Match(char expected,
                            in SpStr source)
         {
@@ -121,6 +126,29 @@ namespace lox
             return true;
         }
 
+        private void Number(in SpStr source)
+        {
+            while (this.IsDigit(this.Peek(source)))
+            {
+                this.Advance(source);
+            }
+
+            if (this.Peek(source) == '.'
+                && this.IsDigit(this.PeekNext(source)))
+            {
+                this.Advance(source);
+
+                while (this.IsDigit(this.Peek(source)))
+                {
+                    this.Advance(source);
+                }
+            }
+
+            this.AddToken(NUMBER,
+                          double.Parse(source.Slice(this.start,
+                                                    this.current - this.start)));
+        }
+
         private char Peek(in SpStr source)
         {
             if (this.IsAtEnd(source))
@@ -129,6 +157,16 @@ namespace lox
             }
 
             return source[this.current];
+        }
+
+        private char PeekNext(in SpStr source)
+        {
+            if (this.current + 1 >= source.Length)
+            {
+                return '\0';
+            }
+
+            return source[this.current + 1];
         }
 
         private void ScanToken(in SpStr source)
@@ -235,13 +273,21 @@ namespace lox
                     this.String(source);
                     break;
                 default:
-                    Lox.Error(this.line,
-                              $"Unexpected character {c}.");
+                    if (this.IsDigit(c))
+                    {
+                        this.Number(source);
+                    }
+                    else
+                    {
+                        Lox.Error(this.line,
+                                  $"Unexpected character {c}.");
+                    }
+
                     break;
             }
         }
 
-        private void String(SpStr source)
+        private void String(in SpStr source)
         {
             while (this.Peek(source) != '"'
                    && !this.IsAtEnd(source))

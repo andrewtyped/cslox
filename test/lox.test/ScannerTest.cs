@@ -51,6 +51,16 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void ScannerHandlesIntegerNumbers()
+        {
+            var source = "012 34 6789";
+            this.AssertLiteralTokenSequence(source,
+                                            (NUMBER, "012", 12d, 1),
+                                            (NUMBER, "34", 34d, 1),
+                                            (NUMBER, "6789", 6789d, 1));
+        }
+
+        [TestMethod]
         public void ScannerHandlesMultilineString()
         {
             var source = "\"This is a string.\n It uses two lines.\"";
@@ -74,6 +84,16 @@ namespace lox.test
                                      (LESS_EQUAL, "<=", 1),
                                      (GREATER_EQUAL, ">=", 1),
                                      (SLASH, "/", 1));
+        }
+
+        [TestMethod]
+        public void ScannerHandlesRealNumbers()
+        {
+            var source = "012.12 34.4598 6789.1";
+            this.AssertLiteralTokenSequence(source,
+                                            (NUMBER, "012.12", 12.12d, 1),
+                                            (NUMBER, "34.4598", 34.4598d, 1),
+                                            (NUMBER, "6789.1", 6789.1d, 1));
         }
 
         [TestMethod]
