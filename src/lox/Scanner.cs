@@ -104,14 +104,15 @@ namespace lox
 
         private bool IsAtEnd(in SpStr source) => this.current >= source.Length;
 
-        private bool Match(char expected, in SpStr source)
+        private bool Match(char expected,
+                           in SpStr source)
         {
             if (this.IsAtEnd(source))
             {
                 return false;
             }
 
-            if(source[this.current] != expected)
+            if (source[this.current] != expected)
             {
                 return false;
             }
@@ -198,10 +199,12 @@ namespace lox
                                       : GREATER);
                     break;
                 case '/':
-                    if (this.Match('/', source))
+                    if (this.Match('/',
+                                   source))
                     {
                         //Discard comments
-                        while(this.Peek(source) != '\n' && !this.IsAtEnd(source))
+                        while (this.Peek(source) != '\n'
+                               && !this.IsAtEnd(source))
                         {
                             this.Advance(source);
                         }
@@ -224,11 +227,48 @@ namespace lox
                 case '\n':
                     this.line++;
                     break;
+
+                //Strings
+                //=======
+
+                case '"':
+                    this.String(source);
+                    break;
                 default:
-                    Lox.Error(line,
+                    Lox.Error(this.line,
                               $"Unexpected character {c}.");
                     break;
             }
+        }
+
+        private void String(SpStr source)
+        {
+            while (this.Peek(source) != '"'
+                   && !this.IsAtEnd(source))
+            {
+                if (this.Advance(source) == '\n')
+                {
+                    this.line++;
+                }
+            }
+
+            //Unterminated string.
+            if (this.IsAtEnd(source))
+            {
+                Lox.Error(this.line,
+                          "Unterminated string");
+            }
+
+            //The closing ".
+            this.Advance(source);
+
+            //Trim quotes.
+            string value = source.Slice(this.start + 1,
+                                        this.current - this.start - 2)
+                                 .ToString();
+
+            this.AddToken(STRING,
+                          value);
         }
 
         #endregion

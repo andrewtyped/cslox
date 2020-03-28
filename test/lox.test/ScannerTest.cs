@@ -2,6 +2,8 @@ using lox.constants;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using static lox.constants.TokenType;
+
 namespace lox.test
 {
     [TestClass]
@@ -28,7 +30,7 @@ namespace lox.test
             Assert.AreEqual(1,
                             tokens.Count);
 
-            this.AssertTokenEquality(TokenType.EOF,
+            this.AssertTokenEquality(EOF,
                                      "",
                                      1,
                                      tokens[0],
@@ -44,8 +46,17 @@ namespace lox.test
 
             Assert.AreEqual(1,
                             tokens.Count);
-            this.AssertTokenEquality(TokenType.EOF,
+            this.AssertTokenEquality(EOF,
                                      tokens[0]);
+        }
+
+        [TestMethod]
+        public void ScannerHandlesMultilineString()
+        {
+            var source = "\"This is a string.\n It uses two lines.\"";
+
+            this.AssertLiteralTokenSequence(source,
+                                            (STRING, "\"This is a string.\n It uses two lines.\"", "This is a string.\n It uses two lines.", 2));
         }
 
         [TestMethod]
@@ -54,15 +65,15 @@ namespace lox.test
             var source = "=!<>!===<=>=/";
 
             this.AssertTokenSequence(source,
-                                     (TokenType.EQUAL, "=", 1),
-                                     (TokenType.BANG, "!", 1),
-                                     (TokenType.LESS, "<", 1),
-                                     (TokenType.GREATER, ">", 1),
-                                     (TokenType.BANG_EQUAL, "!=", 1),
-                                     (TokenType.EQUAL_EQUAL, "==", 1),
-                                     (TokenType.LESS_EQUAL, "<=", 1),
-                                     (TokenType.GREATER_EQUAL, ">=", 1),
-                                     (TokenType.SLASH, "/", 1));
+                                     (EQUAL, "=", 1),
+                                     (BANG, "!", 1),
+                                     (LESS, "<", 1),
+                                     (GREATER, ">", 1),
+                                     (BANG_EQUAL, "!=", 1),
+                                     (EQUAL_EQUAL, "==", 1),
+                                     (LESS_EQUAL, "<=", 1),
+                                     (GREATER_EQUAL, ">=", 1),
+                                     (SLASH, "/", 1));
         }
 
         [TestMethod]
@@ -71,16 +82,26 @@ namespace lox.test
             var source = "(){},.-+;*";
 
             this.AssertTokenSequence(source,
-                                     (TokenType.LEFT_PAREN, "(", 1),
-                                     (TokenType.RIGHT_PAREN, ")", 1),
-                                     (TokenType.LEFT_BRACE, "{", 1),
-                                     (TokenType.RIGHT_BRACE, "}", 1),
-                                     (TokenType.COMMA, ",", 1),
-                                     (TokenType.DOT, ".", 1),
-                                     (TokenType.MINUS, "-", 1),
-                                     (TokenType.PLUS, "+", 1),
-                                     (TokenType.SEMICOLON, ";", 1),
-                                     (TokenType.STAR, "*", 1));
+                                     (LEFT_PAREN, "(", 1),
+                                     (RIGHT_PAREN, ")", 1),
+                                     (LEFT_BRACE, "{", 1),
+                                     (RIGHT_BRACE, "}", 1),
+                                     (COMMA, ",", 1),
+                                     (DOT, ".", 1),
+                                     (MINUS, "-", 1),
+                                     (PLUS, "+", 1),
+                                     (SEMICOLON, ";", 1),
+                                     (STAR, "*", 1));
+        }
+
+        [TestMethod]
+        public void ScannerHandlesStrings()
+        {
+            var source = "\"This is a string\"\"Another string.\"";
+
+            this.AssertLiteralTokenSequence(source,
+                                            (STRING, "\"This is a string\"", "This is a string", 1),
+                                            (STRING, "\"Another string.\"", "Another string.", 1));
         }
 
         [TestMethod]
@@ -92,7 +113,7 @@ namespace lox.test
 
             Assert.AreEqual(1,
                             tokens.Count);
-            this.AssertTokenEquality(TokenType.EOF,
+            this.AssertTokenEquality(EOF,
                                      tokens[0]);
         }
 
@@ -105,11 +126,37 @@ namespace lox.test
 
             Assert.AreEqual(1,
                             tokens.Count);
-            this.AssertTokenEquality(TokenType.EOF,
+            this.AssertTokenEquality(EOF,
                                      "",
                                      3,
                                      tokens[0],
                                      source);
+        }
+
+        private void AssertLiteralTokenSequence(string source,
+                                                params (TokenType type, string lexeme, object literal, int line)[] expectedTokens)
+        {
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(expectedTokens.Length,
+                            tokens.Count - 1, //Ignore EOF
+                            "Tokens length");
+
+            for (int i = 0;
+                 i < expectedTokens.Length;
+                 i++)
+            {
+                var token = tokens[i];
+                var expectedToken = expectedTokens[i];
+
+                this.AssertTokenEquality(expectedToken.type,
+                                         expectedToken.lexeme,
+                                         expectedToken.literal,
+                                         expectedToken.line,
+                                         token,
+                                         source);
+            }
         }
 
         private void AssertTokenEquality(TokenType expectedTokenType,
