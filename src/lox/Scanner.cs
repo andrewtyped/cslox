@@ -20,7 +20,7 @@ namespace lox
 
         private int current;
 
-        private readonly int line = 1;
+        private int line = 1;
 
         private int start;
 
@@ -72,7 +72,7 @@ namespace lox
 
             this.tokens.Add(new Token(this.current,
                                       this.current,
-                                      1,
+                                      this.line,
                                       EOF));
 
             return this.tokens;
@@ -211,6 +211,18 @@ namespace lox
                         this.AddToken(SLASH);
                     }
 
+                    break;
+
+                //Whitespace
+                //==========
+
+                case ' ':
+                case '\r':
+                case '\t':
+                    //Ignore whitespace.
+                    break;
+                case '\n':
+                    this.line++;
                     break;
                 default:
                     Lox.Error(line,

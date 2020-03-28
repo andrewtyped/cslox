@@ -36,6 +36,19 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void ScannerHandlesComments()
+        {
+            var source = "//This is a comment and symbols to not parse / * ( )";
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(1,
+                            tokens.Count);
+            this.AssertTokenEquality(TokenType.EOF,
+                                     tokens[0]);
+        }
+
+        [TestMethod]
         public void ScannerHandlesOperators()
         {
             var source = "=!<>!===<=>=/";
@@ -71,19 +84,6 @@ namespace lox.test
         }
 
         [TestMethod]
-        public void ScannerHandlesComments()
-        {
-            var source = "//This is a comment and symbols to not parse / * ( )";
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
-
-            Assert.AreEqual(1,
-                            tokens.Count);
-            this.AssertTokenEquality(TokenType.EOF,
-                                     tokens[0]);
-        }
-
-        [TestMethod]
         public void ScannerHandlesUnrecognizedCharacters()
         {
             var source = "###";
@@ -94,6 +94,22 @@ namespace lox.test
                             tokens.Count);
             this.AssertTokenEquality(TokenType.EOF,
                                      tokens[0]);
+        }
+
+        [TestMethod]
+        public void ScannerHandlesWhitespace()
+        {
+            var source = "  \r\n\n\t\t  ";
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
+
+            Assert.AreEqual(1,
+                            tokens.Count);
+            this.AssertTokenEquality(TokenType.EOF,
+                                     "",
+                                     3,
+                                     tokens[0],
+                                     source);
         }
 
         private void AssertTokenEquality(TokenType expectedTokenType,
