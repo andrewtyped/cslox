@@ -16,6 +16,26 @@ namespace lox
     {
         #region Fields
 
+        private static readonly IReadOnlyDictionary<string, TokenType> keywords = new Dictionary<string, TokenType>()
+        {
+            {"and", AND },
+            {"class", CLASS },
+            {"else", ELSE },
+            {"false", FALSE },
+            {"for", FOR },
+            {"fun", FUN },
+            {"if", IF },
+            {"nil", NIL },
+            {"or", OR },
+            {"print", PRINT },
+            {"return", RETURN },
+            {"super", SUPER },
+            {"this", THIS },
+            {"true", TRUE },
+            {"var", VAR },
+            {"while", WHILE }
+        };
+
         private readonly List<Token> tokens = new List<Token>();
 
         private int current;
@@ -109,7 +129,28 @@ namespace lox
                 this.Advance(source);
             }
 
-            this.AddToken(IDENTIFIER);
+            //HACK: Lame attempt to avoid allocations. Longest keyword is 'return' at length 6. Shortest is 'or'/'if' at 2. Any identifier longer or shorter can't be a keyword.
+            const int maxKeywordlength = 6;
+            const int minKeywordLength = 2;
+            int identifierLength = this.current - this.start;
+            if (identifierLength > maxKeywordlength || identifierLength < minKeywordLength)
+            {
+                this.AddToken(IDENTIFIER);
+                return;
+            }
+
+            //HACK: This tears down all our careful work to avoid string allocations. The book uses a dictionary, I'd need to make substantial changes (like using a trie) to fix this.
+            if (keywords.TryGetValue(source.Slice(this.start,
+                                                  identifierLength)
+                                           .ToString(),
+                                     out TokenType tokenType))
+            {
+                this.AddToken(tokenType);
+            }
+            else
+            {
+                this.AddToken(IDENTIFIER);
+            }
         }
 
         private bool IsAlpha(char c)

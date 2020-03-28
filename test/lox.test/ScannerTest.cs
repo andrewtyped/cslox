@@ -72,12 +72,38 @@ namespace lox.test
         [TestMethod]
         public void ScannerHandlesIdentifiers()
         {
-            var source = "These are my identifiers";
+            var source = "These are my identifiers i j k";
             this.AssertTokenSequence(source,
                                      (IDENTIFIER, "These", 1),
                                      (IDENTIFIER, "are", 1),
                                      (IDENTIFIER, "my", 1),
-                                     (IDENTIFIER, "identifiers", 1));
+                                     (IDENTIFIER, "identifiers", 1),
+                                     (IDENTIFIER, "i", 1),
+                                     (IDENTIFIER, "j", 1),
+                                     (IDENTIFIER, "k", 1));
+        }
+
+        [TestMethod]
+        public void ScannerHandlesReservedWords()
+        {
+            var source = "and class else false for fun if nil or print return super this true var while";
+            this.AssertTokenSequence(source,
+                                     (AND, "and", 1),
+                                     (CLASS, "class", 1),
+                                     (ELSE, "else", 1),
+                                     (FALSE, "false", 1),
+                                     (FOR, "for", 1),
+                                     (FUN, "fun", 1),
+                                     (IF, "if", 1),
+                                     (NIL, "nil", 1),
+                                     (OR, "or", 1),
+                                     (PRINT, "print", 1),
+                                     (RETURN, "return", 1),
+                                     (SUPER, "super", 1),
+                                     (THIS, "this", 1),
+                                     (TRUE, "true", 1),
+                                     (VAR, "var", 1),
+                                     (WHILE, "while", 1));
         }
 
         [TestMethod]
