@@ -70,6 +70,17 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void ScannerHandlesIdentifiers()
+        {
+            var source = "These are my identifiers";
+            this.AssertTokenSequence(source,
+                                     (IDENTIFIER, "These", 1),
+                                     (IDENTIFIER, "are", 1),
+                                     (IDENTIFIER, "my", 1),
+                                     (IDENTIFIER, "identifiers", 1));
+        }
+
+        [TestMethod]
         public void ScannerHandlesOperators()
         {
             var source = "=!<>!===<=>=/";

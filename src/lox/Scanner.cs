@@ -102,6 +102,26 @@ namespace lox
             return source[this.current - 1];
         }
 
+        private void Identifier(in SpStr source)
+        {
+            while (this.IsAlphaNumeric(this.Peek(source)))
+            {
+                this.Advance(source);
+            }
+
+            this.AddToken(IDENTIFIER);
+        }
+
+        private bool IsAlpha(char c)
+        {
+            return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_';
+        }
+
+        private bool IsAlphaNumeric(char c)
+        {
+            return this.IsAlpha(c) || this.IsDigit(c);
+        }
+
         private bool IsAtEnd(in SpStr source) => this.current >= source.Length;
 
         private bool IsDigit(char c)
@@ -273,10 +293,23 @@ namespace lox
                     this.String(source);
                     break;
                 default:
+
+                    //Numbers
+                    //=======
+
                     if (this.IsDigit(c))
                     {
                         this.Number(source);
                     }
+
+                    //Identifiers
+                    //===========
+
+                    else if (this.IsAlpha(c))
+                    {
+                        this.Identifier(source);
+                    }
+
                     else
                     {
                         Lox.Error(this.line,
