@@ -1,0 +1,32 @@
+/*=========================================
+Grammar for the Lox Programming Language
+
+This file uses the grammar syntax described in the Crafting Interpreters book.
+
+A rule is declared with a name, followed by ->, then by the sequence of characters produced by the rule,
+then by a terminating ;. The rule's characters may refer to other rules, including itself, or 
+a token in the Lox language.
+
+A rule may map to one of several sequences. The rule can be re-defined for each sequence, or 
+sequences can be separated with |.
+
+Elements of a sequence can be grouped between ( and ).
+
+Append a * to a symbol or group to indicate it may be repeated 0 or more times.
+
+Append a + to a symbol or group to indicate it may be repeated 1 or more times.
+
+Append a ? to a symbol or group to indicate it may appear 0 or 1 times.
+
+For example, here is the 'breakfast' grammar used in the book:
+
+breakfast -> protein ( "with" breakfast "on the side" )?
+          | bread ;
+
+protein   -> "really"+ "crispy" "bacon"
+          | "sausage"
+          | ( "scrambled" | "poached" | "fried" ) "eggs" ;
+
+bread     -> "toast" | "biscuits" | "English muffin" ;
+
+=========================================*/
