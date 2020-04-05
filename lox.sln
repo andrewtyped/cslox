@@ -14,9 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		lox-grammar.txt = lox-grammar.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tool", "src\tool\tool.csproj", "{0740AF7B-01EC-44DD-9C09-96914FB140A2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tool.test", "test\tool.test\tool.test.csproj", "{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tool", "src\tool\tool.csproj", "{0740AF7B-01EC-44DD-9C09-96914FB140A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,17 +34,12 @@ Global
 		{0740AF7B-01EC-44DD-9C09-96914FB140A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0740AF7B-01EC-44DD-9C09-96914FB140A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0740AF7B-01EC-44DD-9C09-96914FB140A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{53FD0A40-C30A-4E77-80F3-976A07C9DE98} = {FDA0A9A1-E050-4FCA-B2A5-2A0C4668C86D}
-		{6F93D61B-8AC1-4C1B-9840-E10A6C9450B8} = {FDA0A9A1-E050-4FCA-B2A5-2A0C4668C86D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6EA038C-3CCF-4CFA-AC03-8F812877BA19}
