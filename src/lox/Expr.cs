@@ -11,10 +11,10 @@ namespace lox
     {
         public interface IVisitor<R>
         {
-            R VisitBinaryExpr(Binary expr);
-            R VisitGroupingExpr(Grouping expr);
-            R VisitLiteralExpr(Literal expr);
-            R VisitUnaryExpr(Unary expr);
+            R VisitBinaryExpr(Binary expr, in ReadOnlySpan<char> source);
+            R VisitGroupingExpr(Grouping expr, in ReadOnlySpan<char> source);
+            R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
+            R VisitUnaryExpr(Unary expr, in ReadOnlySpan<char> source);
         }
 
         public class Binary : Expr
@@ -32,9 +32,9 @@ namespace lox
 
             public readonly Expr right;
 
-            public override R Accept<R>(IVisitor<R> visitor)
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
-                return visitor.VisitBinaryExpr(this);
+                return visitor.VisitBinaryExpr(this, source);
             }
         }
 
@@ -48,9 +48,9 @@ namespace lox
 
             public readonly Expr expression;
 
-            public override R Accept<R>(IVisitor<R> visitor)
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
-                return visitor.VisitGroupingExpr(this);
+                return visitor.VisitGroupingExpr(this, source);
             }
         }
 
@@ -64,9 +64,9 @@ namespace lox
 
             public readonly object? value;
 
-            public override R Accept<R>(IVisitor<R> visitor)
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
-                return visitor.VisitLiteralExpr(this);
+                return visitor.VisitLiteralExpr(this, source);
             }
         }
 
@@ -83,13 +83,13 @@ namespace lox
 
             public readonly Expr right;
 
-            public override R Accept<R>(IVisitor<R> visitor)
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
-                return visitor.VisitUnaryExpr(this);
+                return visitor.VisitUnaryExpr(this, source);
             }
         }
 
 
-        public abstract R Accept<R>(IVisitor<R> visitor);
+        public abstract R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source);
     }
 }

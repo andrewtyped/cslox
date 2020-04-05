@@ -82,10 +82,10 @@ namespace tool
                 //End Fields
 
                 //Visitor Pattern
-                WriteLine("public override R Accept<R>(IVisitor<R> visitor)");
+                WriteLine("public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)");
                 WriteLine("{");
                 PushIndent();
-                WriteLine($"return visitor.Visit{className}{baseName}(this);");
+                WriteLine($"return visitor.Visit{className}{baseName}(this, source);");
                 PopIndent();
                 WriteLine("}");
                 //End Visitor
@@ -107,7 +107,7 @@ namespace tool
                     
                     string typeName = type.Split(":")[0]
                                           .Trim();
-                    WriteLine($"R Visit{typeName}{baseName}({typeName} {baseName.ToLower()});");
+                    WriteLine($"R Visit{typeName}{baseName}({typeName} {baseName.ToLower()}, in ReadOnlySpan<char> source);");
                 }
 
                 PopIndent();
@@ -142,7 +142,7 @@ namespace tool
                            fields);
             }
 
-            WriteLine($"public abstract R Accept<R>(IVisitor<R> visitor);");
+            WriteLine($"public abstract R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source);");
 
             PopIndent();
             WriteLine("}");
