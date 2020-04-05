@@ -81,9 +81,37 @@ namespace tool
                 }
                 //End Fields
 
+                //Visitor Pattern
+                WriteLine("public override R Accept<R>(IVisitor<R> visitor)");
+                WriteLine("{");
+                PushIndent();
+                WriteLine($"return visitor.Visit{className}{baseName}(this);");
+                PopIndent();
+                WriteLine("}");
+                //End Visitor
+
                 PopIndent();
                 WriteLine("}");
                 NewLine();
+                NewLine();
+            }
+
+            void DefineVisitor()
+            {
+                WriteLine("public interface IVisitor<R>");
+                WriteLine("{");
+                PushIndent();
+
+                foreach(string type in types)
+                {
+                    
+                    string typeName = type.Split(":")[0]
+                                          .Trim();
+                    WriteLine($"R Visit{typeName}{baseName}({typeName} {baseName.ToLower()});");
+                }
+
+                PopIndent();
+                WriteLine("}");
                 NewLine();
             }
 
@@ -101,6 +129,8 @@ namespace tool
             WriteLine("{");
             PushIndent();
 
+            DefineVisitor();
+
             foreach(string type in types)
             {
                 string className = type.Split(":")[0]
@@ -111,6 +141,8 @@ namespace tool
                 DefineType(className,
                            fields);
             }
+
+            WriteLine($"public abstract R Accept<R>(IVisitor<R> visitor);");
 
             PopIndent();
             WriteLine("}");

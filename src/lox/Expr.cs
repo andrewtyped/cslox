@@ -9,6 +9,14 @@ namespace lox
 {
     public abstract class Expr
     {
+        public interface IVisitor<R>
+        {
+            R VisitBinaryExpr(Binary expr);
+            R VisitGroupingExpr(Grouping expr);
+            R VisitLiteralExpr(Literal expr);
+            R VisitUnaryExpr(Unary expr);
+        }
+
         public class Binary : Expr
         {
             public Binary( Expr left, Token op, Expr right )
@@ -24,6 +32,10 @@ namespace lox
 
             public readonly Expr right;
 
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitBinaryExpr(this);
+            }
         }
 
 
@@ -36,6 +48,10 @@ namespace lox
 
             public readonly Expr expression;
 
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitGroupingExpr(this);
+            }
         }
 
 
@@ -48,6 +64,10 @@ namespace lox
 
             public readonly Object value;
 
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitLiteralExpr(this);
+            }
         }
 
 
@@ -63,8 +83,13 @@ namespace lox
 
             public readonly Expr right;
 
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitUnaryExpr(this);
+            }
         }
 
 
+        public abstract R Accept<R>(IVisitor<R> visitor);
     }
 }
