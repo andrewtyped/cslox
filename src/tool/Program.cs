@@ -23,7 +23,7 @@ namespace tool
                       {
                           "Binary   : Expr left, Token op, Expr right",
                           "Grouping : Expr expression",
-                          "Literal  : Object value",
+                          "Literal  : object? value",
                           "Unary    : Token op, Expr right"
                       });
 
