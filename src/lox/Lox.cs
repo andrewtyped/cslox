@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 using static System.Console;
@@ -41,10 +42,10 @@ namespace lox
             return RunPrompt();
         }
 
-        private static int Run(string code)
+        private static int Run(in ReadOnlySpan<char> source)
         {
-            var scanner = new Scanner(code);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             for (int i = 0;
                  i < tokens.Count;
@@ -59,7 +60,7 @@ namespace lox
         private static int RunFile(string filePath)
         {
             var bytes = File.ReadAllBytes(filePath);
-            var returnCode = Run(Encoding.UTF8.GetString(bytes));
+            var returnCode = Run(Encoding.UTF8.GetString(bytes).AsSpan());
 
             if (hadError)
             {
@@ -75,7 +76,7 @@ namespace lox
             {
                 Write("> ");
                 var code = ReadLine();
-                _ = Run(code);
+                _ = Run(code.AsSpan());
 
                 //Reset error. Lox errors shouldn't crash the user's REPL.
                 hadError = false;

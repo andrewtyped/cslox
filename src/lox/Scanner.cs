@@ -51,19 +51,8 @@ namespace lox
         /// <summary>
         /// Create a new instance.
         /// </summary>
-        /// <param name="source">The Lox code to tokenize.</param>
-        public Scanner(string source) => this.Source = source;
-
-        #endregion
-
-        #region Instance Properties
-
-        /// <summary>
-        /// Gets the Lox code to tokenize.
-        /// </summary>
-        public string Source
+        public Scanner()
         {
-            get;
         }
 
         #endregion
@@ -74,14 +63,12 @@ namespace lox
         /// Reads the content of <see cref="Source"/> to produce a list of Lox tokens.
         /// </summary>
         /// <returns>The list of tokens read from <see cref="Source"/></returns>
-        public IReadOnlyList<Token> ScanTokens()
+        public IReadOnlyList<Token> ScanTokens(ReadOnlySpan<char> source)
         {
             if (this.tokens.Count > 0)
             {
                 return this.tokens;
             }
-
-            var source = this.Source.AsSpan();
 
             while (!this.IsAtEnd(source))
             {

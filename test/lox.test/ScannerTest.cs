@@ -12,20 +12,17 @@ namespace lox.test
         #region Instance Methods
 
         [TestMethod]
-        public void CanConstructScannerWithSource()
+        public void CanConstructScanner()
         {
-            var scanner = new Scanner("test");
-
-            Assert.AreEqual("test",
-                            scanner.Source);
+            var scanner = new Scanner();
         }
 
         [TestMethod]
         public void ScannerDetectsEndOfFile()
         {
             var source = "";
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(1,
                             tokens.Count);
@@ -41,8 +38,8 @@ namespace lox.test
         public void ScannerHandlesComments()
         {
             var source = "//This is a comment and symbols to not parse / * ( )";
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(1,
                             tokens.Count);
@@ -165,8 +162,8 @@ namespace lox.test
         public void ScannerHandlesUnrecognizedCharacters()
         {
             var source = "###";
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(1,
                             tokens.Count);
@@ -178,8 +175,8 @@ namespace lox.test
         public void ScannerHandlesWhitespace()
         {
             var source = "  \r\n\n\t\t  ";
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(1,
                             tokens.Count);
@@ -193,8 +190,8 @@ namespace lox.test
         private void AssertLiteralTokenSequence(string source,
                                                 params (TokenType type, string lexeme, object literal, int line)[] expectedTokens)
         {
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(expectedTokens.Length,
                             tokens.Count - 1, //Ignore EOF
@@ -258,8 +255,8 @@ namespace lox.test
         private void AssertTokenSequence(string source,
                                          params (TokenType type, string lexeme, int line)[] expectedTokens)
         {
-            var scanner = new Scanner(source);
-            var tokens = scanner.ScanTokens();
+            var scanner = new Scanner();
+            var tokens = scanner.ScanTokens(source);
 
             Assert.AreEqual(expectedTokens.Length,
                             tokens.Count - 1, //Ignore EOF
