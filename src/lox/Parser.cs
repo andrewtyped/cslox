@@ -17,7 +17,7 @@ namespace lox
 
         public Expr Parse(in ScannedSource source)
         {
-            return this.Primary(source);
+            return this.Unary(source);
         }
 
         private Token Advance(in ScannedSource source)
@@ -92,7 +92,8 @@ namespace lox
                 return new Literal(true);
             }
 
-            if(this.Match(source, NIL))
+            if (this.Match(source,
+                           NIL))
             {
                 return new Literal(null);
             }
@@ -108,6 +109,20 @@ namespace lox
             //TODO: Support expression!
 
             return null!;
+        }
+
+        private Expr Unary(in ScannedSource source)
+        {
+            if (this.Match(source,
+                           BANG,
+                           MINUS))
+            {
+                var op = this.Previous(source);
+                return new Unary(op,
+                                 this.Unary(source));
+            }
+
+            return this.Primary(source);
         }
 
         #endregion

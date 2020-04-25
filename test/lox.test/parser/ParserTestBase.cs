@@ -16,6 +16,24 @@ namespace lox.test.parser
             this.parser = new Parser();
         }
 
+        protected T AssertExpr<T>(ScannedSource source)
+            where T : Expr
+        {
+            var expr = this.parser.Parse(source);
+            return this.AssertExpr<T>(expr);
+        }
+
+        protected T AssertExpr<T>(Expr expr)
+            where T : Expr
+        {
+            var expectedExpr = expr as T;
+
+            Assert.IsNotNull(expectedExpr,
+                             $"Expected expr to be of type {typeof(T)} but was {expr.GetType()}");
+
+            return expectedExpr!;
+        }
+
         protected ScannedSource Scan(string source)
         {
             var tokens = this.scanner.ScanTokens(source);
