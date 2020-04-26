@@ -171,7 +171,9 @@ namespace lox
                 return this.Advance(source);
             }
 
-            throw new NotImplementedException("Pick this up later");
+            throw this.Error(source,
+                             this.Peek(source),
+                             error);
         }
 
         private bool Match(in ScannedSource source,
@@ -230,6 +232,55 @@ namespace lox
         private Token Previous(in ScannedSource source)
         {
             return source.Tokens[this.current - 1];
+        }
+
+        #endregion
+
+        #region Error Handling
+
+        private ParseError Error(in ScannedSource source,
+                                 Token token,
+                                 string message)
+        {
+            Lox.Error(source,
+                      token,
+                      message);
+            return new ParseError(message);
+        }
+
+        /// <summary>
+        /// After encountering a serious parse error, discard tokens until we reach
+        /// a statement or other well-defined boundary to resume parsing. This attempts
+        /// to maximize the unique errors we can report to the user without reporting
+        /// duplicate errors.
+        /// </summary>
+        private void Synchronize(in ScannedSource source)
+        {
+            this.Advance(source);
+
+            while (!this.IsAtEnd(source))
+            {
+                if(this.Previous(source).Type == SEMICOLON)
+                {
+                    return;
+                }
+
+                switch (this.Peek(source)
+                            .Type)
+                {
+                    case CLASS:
+                    case FUN:
+                    case VAR:
+                    case FOR:
+                    case IF:
+                    case WHILE:
+                    case PRINT:
+                    case RETURN:
+                        return;
+                }
+
+                this.Advance(source);
+            }
         }
 
         #endregion

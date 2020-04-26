@@ -5,6 +5,7 @@ using System.Text;
 using static System.Console;
 
 using static lox.constants.ExitCodes;
+using static lox.constants.TokenType;
 
 namespace lox
 {
@@ -88,6 +89,24 @@ namespace lox
         #region Error Handling
 
         private static bool hadError;
+
+        public static void Error(in ScannedSource source,
+                                 Token token,
+                                 string message)
+        {
+            if(token.Type == EOF)
+            {
+                Report(token.Line,
+                       " at end",
+                       message);
+            }
+            else
+            {
+                Report(token.Line,
+                       $" at {source.GetLexeme(token).ToString()}",
+                       message);
+            }
+        }
 
         public static void Error(int line, string message)
         {
