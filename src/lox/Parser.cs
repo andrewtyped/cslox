@@ -154,7 +154,9 @@ namespace lox
                 return new Grouping(expr);
             }
 
-            return null!;
+            throw this.Error(source,
+                             this.Peek(source),
+                             "Expect expression");
         }
 
         #endregion
