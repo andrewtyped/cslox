@@ -1,4 +1,6 @@
-﻿using lox.constants;
+﻿using System;
+
+using lox.constants;
 
 using static lox.constants.TokenType;
 using static lox.Expr;
@@ -17,65 +19,101 @@ namespace lox
 
         public Expr Parse(in ScannedSource source)
         {
-            return this.Unary(source);
+            return this.Expression(source);
         }
 
-        private Token Advance(in ScannedSource source)
+        #endregion
+
+        #region GrammarRules
+
+        private Expr Expression(in ScannedSource source) => this.Equality(source);
+
+        private Expr Equality(in ScannedSource source)
         {
-            if (!this.IsAtEnd(source))
+            Expr expr = this.Comparison(source);
+
+            while (this.Match(source,
+                              EQUAL_EQUAL,
+                              BANG_EQUAL))
             {
-                this.current++;
+                Token op = this.Previous(source);
+                Expr right = this.Comparison(source);
+                expr = new Binary(expr,
+                                  op,
+                                  right);
             }
 
-            return this.Previous(source);
+            return expr;
         }
 
-        private bool Check(in ScannedSource source,
-                           TokenType tokenType)
+        private Expr Comparison(in ScannedSource source)
         {
-            if (this.IsAtEnd(source))
+            Expr expr = this.Addition(source);
+
+            while (this.Match(source,
+                              GREATER,
+                              GREATER_EQUAL,
+                              LESS,
+                              LESS_EQUAL))
             {
-                return false;
+                Token op = this.Previous(source);
+                Expr right = this.Addition(source);
+                expr = new Binary(expr,
+                                  op,
+                                  right);
             }
 
-            return this.Peek(source)
-                       .Type
-                   == tokenType;
+            return expr;
         }
 
-        private bool IsAtEnd(in ScannedSource source)
+        private Expr Addition(in ScannedSource source)
         {
-            return this.Peek(source)
-                       .Type
-                   == EOF;
-        }
+            Expr expr = this.Multiplication(source);
 
-        private bool Match(in ScannedSource source,
-                           params TokenType[] tokenTypes)
-        {
-            for (int i = 0;
-                 i < tokenTypes.Length;
-                 i++)
+            while (this.Match(source,
+                              PLUS,
+                              MINUS))
             {
-                if (this.Check(source,
-                               tokenTypes[i]))
-                {
-                    this.Advance(source);
-                    return true;
-                }
+                Token op = this.Previous(source);
+                Expr right = this.Multiplication(source);
+                expr = new Binary(expr,
+                                  op,
+                                  right);
             }
 
-            return false;
+            return expr;
         }
 
-        private Token Peek(in ScannedSource source)
+        private Expr Multiplication(in ScannedSource source)
         {
-            return source.Tokens[this.current];
+            Expr expr = this.Unary(source);
+
+            while (this.Match(source,
+                              STAR,
+                              SLASH))
+            {
+                Token op = this.Previous(source);
+                Expr right = this.Unary(source);
+                expr = new Binary(expr,
+                                  op,
+                                  right);
+            }
+
+            return expr;
         }
 
-        private Token Previous(in ScannedSource source)
+        private Expr Unary(in ScannedSource source)
         {
-            return source.Tokens[this.current - 1];
+            if (this.Match(source,
+                           BANG,
+                           MINUS))
+            {
+                var op = this.Previous(source);
+                return new Unary(op,
+                                 this.Unary(source));
+            }
+
+            return this.Primary(source);
         }
 
         private Expr Primary(in ScannedSource source)
@@ -106,23 +144,92 @@ namespace lox
                                        .Literal);
             }
 
-            //TODO: Support expression!
+            if (this.Match(source,
+                           LEFT_PAREN))
+            {
+                Expr expr = this.Expression(source);
+                this.Consume(source,
+                             RIGHT_PAREN,
+                             "Expect ')' after grouping expression.");
+                return new Grouping(expr);
+            }
 
             return null!;
         }
 
-        private Expr Unary(in ScannedSource source)
+        #endregion
+
+        #region Token operations
+
+        private Token Consume(in ScannedSource source,
+                              TokenType tokenType,
+                              string error)
         {
-            if (this.Match(source,
-                           BANG,
-                           MINUS))
+            if (this.Check(source,
+                           tokenType))
             {
-                var op = this.Previous(source);
-                return new Unary(op,
-                                 this.Unary(source));
+                return this.Advance(source);
             }
 
-            return this.Primary(source);
+            throw new NotImplementedException("Pick this up later");
+        }
+
+        private bool Match(in ScannedSource source,
+                           params TokenType[] tokenTypes)
+        {
+            for (int i = 0;
+                 i < tokenTypes.Length;
+                 i++)
+            {
+                if (this.Check(source,
+                               tokenTypes[i]))
+                {
+                    this.Advance(source);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool Check(in ScannedSource source,
+                           TokenType tokenType)
+        {
+            if (this.IsAtEnd(source))
+            {
+                return false;
+            }
+
+            return this.Peek(source)
+                       .Type
+                   == tokenType;
+        }
+
+        private Token Advance(in ScannedSource source)
+        {
+            if (!this.IsAtEnd(source))
+            {
+                this.current++;
+            }
+
+            return this.Previous(source);
+        }
+
+        private bool IsAtEnd(in ScannedSource source)
+        {
+            return this.Peek(source)
+                       .Type
+                   == EOF;
+        }
+
+        private Token Peek(in ScannedSource source)
+        {
+            return source.Tokens[this.current];
+        }
+
+        private Token Previous(in ScannedSource source)
+        {
+            return source.Tokens[this.current - 1];
         }
 
         #endregion

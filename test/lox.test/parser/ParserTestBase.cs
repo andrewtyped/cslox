@@ -14,6 +14,19 @@ namespace lox.test.parser
         {
             this.scanner = new Scanner();
             this.parser = new Parser();
+            this.astPrinter = new AstPrinter();
+        }
+
+        protected void AssertAst(string source,
+                                 string expectedAst)
+        {
+            var scannedSource = this.Scan(source);
+            var expr = this.parser.Parse(scannedSource);
+            var actualAst = this.astPrinter.Print(expr,
+                                                  scannedSource.Source);
+
+            Assert.AreEqual(expectedAst,
+                            actualAst);
         }
 
         protected T AssertExpr<T>(ScannedSource source)
@@ -47,6 +60,8 @@ namespace lox.test.parser
         protected Scanner scanner;
 
         protected Parser parser;
+
+        protected AstPrinter astPrinter;
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 }
