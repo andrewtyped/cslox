@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using static System.Console;
@@ -47,13 +48,19 @@ namespace lox
         {
             var scanner = new Scanner();
             var tokens = scanner.ScanTokens(source);
+            var scannedsource = new ScannedSource(new ReadOnlySpan<Token>(tokens.ToArray()),
+                                                  source);
+            var parser = new Parser();
+            var expr = parser.Parse(scannedsource);
 
-            for (int i = 0;
-                 i < tokens.Count;
-                 i++)
+            if (hadError)
             {
-                WriteLine(tokens[i]);
+                return EX_DATAERR;
             }
+
+            var astPrinter = new AstPrinter();
+            WriteLine(astPrinter.Print(expr,
+                                       source));
 
             return EX_OK;
         }
