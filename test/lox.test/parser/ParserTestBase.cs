@@ -47,6 +47,24 @@ namespace lox.test.parser
             return expectedExpr!;
         }
 
+        protected void AssertParseErrors(params string[] containsMessages)
+        {
+            var parseErrors = this.parser.ParseErrors.ToList();
+
+            Assert.AreEqual(containsMessages.Length,
+                            parseErrors.Count);
+
+            for (int i = 0;
+                 i < containsMessages.Length;
+                 i++)
+            {
+                var parseError = parseErrors[i];
+                var containsMessage = containsMessages[i];
+                Assert.IsTrue(parseError.Message.Contains(containsMessage),
+                              $"Expected parse error '{parseError.Message}' to contain text '{containsMessage}'");
+            }
+        }
+
         protected ScannedSource Scan(string source)
         {
             var tokens = this.scanner.ScanTokens(source);

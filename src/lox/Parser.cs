@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using lox.constants;
 
 using static lox.constants.TokenType;
@@ -13,14 +13,35 @@ namespace lox
 
         private int current;
 
+        private readonly List<ParseError> parseErrors = new List<ParseError>();
+
         #endregion
 
         #region Instance Methods
 
         public Expr Parse(in ScannedSource source)
         {
-            return this.Expression(source);
+            try
+            {
+                this.current = 0;
+                this.parseErrors.Clear();
+                return this.Expression(source);
+            }
+            catch(ParseError parseError)
+            {
+                this.parseErrors.Add(parseError);
+                return new Literal(null);
+            }
         }
+
+        #endregion
+
+        #region Instance Properties
+
+        /// <summary>
+        /// Collects any errors from the most recent parse.
+        /// </summary>
+        public IEnumerable<ParseError> ParseErrors => this.parseErrors;
 
         #endregion
 

@@ -67,18 +67,11 @@ namespace lox.test.parser
         [TestMethod]
         public void ThrowsParseErrorIfNoValidExpressionDetected()
         {
-            try
-            {
-                var source = "This is not valid lox";
-                var scannedSource = this.Scan(source);
-                var expr = this.parser.Parse(scannedSource);
 
-                Assert.Fail("Expected parse error");
-            }
-            catch(ParseError parseError)
-            {
-                Assert.IsTrue(parseError.Message.Contains("Expect expression"));
-            }
+            var source = "This is not valid lox";
+            var scannedSource = this.Scan(source);
+            var expr = this.parser.Parse(scannedSource);
+            this.AssertParseErrors("Expect expression");
         }
 
         private ScannedSource ScanBoolean(bool boolean)
