@@ -76,4 +76,35 @@ namespace lox.test.interpreter
                             value);
         }
     }
+
+    [TestClass]
+    public class UnaryInterpretaionTest : InterpreterTestBase
+    {
+        [DataTestMethod]
+        [DataRow("-42", -42d)]
+        [DataRow("!true", false)]
+        [DataRow("!false", true)]
+        [DataRow("!42", false)]
+        [DataRow("!\"A string\"", false)]
+        [DataRow("!nil", true)]
+        public void CanInterpretUnaryExpressionsAppliedToLiterals(string source,
+                                                                  object expectedValue)
+        {
+            var value = this.Interpret(source);
+            Assert.AreEqual(expectedValue,
+                            value);
+        }
+
+        [DataTestMethod]
+        [DataRow("-(((30)))", -30d)]
+        [DataRow("!(true)", false)]
+        [DataRow("!((false))", true)]
+        public void CanInterpretUnaryExpressionsAppliedToGroups(string source,
+                                                                  object expectedValue)
+        {
+            var value = this.Interpret(source);
+            Assert.AreEqual(expectedValue,
+                            value);
+        }
+    }
 }

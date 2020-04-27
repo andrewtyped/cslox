@@ -1,5 +1,7 @@
 ﻿using System;
 
+using static lox.constants.TokenType;
+
 namespace lox
 {
     /// <summary>
@@ -34,7 +36,16 @@ namespace lox
         public object? VisitUnaryExpr(Expr.Unary expr,
                                      in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? right = this.Evaluate(expr.right,
+                                          source);
+
+            return expr.op.Type switch
+            {
+                MINUS => -((double?)right),
+                BANG => !this.IsTruthy(right,
+                                       source),
+                _ => null
+            };
         }
 
         #endregion
@@ -46,6 +57,17 @@ namespace lox
         {
             return expr.Accept(this,
                                source);
+        }
+
+        private bool IsTruthy(object? value,
+                              in ReadOnlySpan<char> source)
+        {
+            return value switch
+            {
+                null => false,
+                false => false,
+                _ => true
+            };
         }
 
         #endregion
