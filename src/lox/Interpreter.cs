@@ -8,6 +8,9 @@ namespace lox
     public class Interpreter : Expr.IVisitor<object?>
     {
         #region Instance Methods
+        #endregion
+
+        #region Expression visitors
 
         public object? VisitBinaryExpr(Expr.Binary expr,
                                       in ReadOnlySpan<char> source)
@@ -18,7 +21,8 @@ namespace lox
         public object? VisitGroupingExpr(Expr.Grouping expr,
                                         in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            return this.Evaluate(expr.expression,
+                                 source);
         }
 
         public object? VisitLiteralExpr(Expr.Literal expr,
@@ -31,6 +35,17 @@ namespace lox
                                      in ReadOnlySpan<char> source)
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Utilities
+
+        private object? Evaluate(Expr expr,
+                                 in ReadOnlySpan<char> source)
+        {
+            return expr.Accept(this,
+                               source);
         }
 
         #endregion
