@@ -25,6 +25,12 @@
         /// </summary>
         public const int EX_USAGE = 64;
 
+        /// <summary>
+        /// An internal software error has been detected. This should be limited to non-operating
+        /// system errors as possible.
+        /// </summary>
+        public const int EX_SOFTWARE = 70;
+
         #endregion
     }
 }

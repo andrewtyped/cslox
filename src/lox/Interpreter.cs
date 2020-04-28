@@ -35,6 +35,7 @@ namespace lox
             catch(RuntimeError runtimeError)
             {
                 this.LastError = runtimeError;
+                Lox.RuntimeError(runtimeError);
                 return null;
             }
         }

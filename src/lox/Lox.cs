@@ -12,6 +12,12 @@ namespace lox
 {
     public class Lox
     {
+        #region Class Fields
+
+        private static Interpreter interpreter = new Interpreter();
+
+        #endregion
+
         #region Class Methods
 
         /// <summary>
@@ -58,9 +64,13 @@ namespace lox
                 return EX_DATAERR;
             }
 
-            var astPrinter = new AstPrinter();
-            WriteLine(astPrinter.Print(expr,
-                                       source));
+            interpreter.Interpret(expr,
+                                  scannedsource.Source);
+
+            if (hadRuntimeError)
+            {
+                return EX_SOFTWARE;
+            }
 
             return EX_OK;
         }
@@ -69,11 +79,6 @@ namespace lox
         {
             var bytes = File.ReadAllBytes(filePath);
             var returnCode = Run(Encoding.UTF8.GetString(bytes).AsSpan());
-
-            if (hadError)
-            {
-                return EX_DATAERR;
-            }
 
             return returnCode;
         }
@@ -96,6 +101,8 @@ namespace lox
         #region Error Handling
 
         private static bool hadError;
+
+        private static bool hadRuntimeError;
 
         public static void Error(in ScannedSource source,
                                  Token token,
@@ -126,6 +133,12 @@ namespace lox
         {
             WriteLine($"[line {line}] Error: {where}: {message}");
             hadError = true;
+        }
+
+        public static void RuntimeError(RuntimeError error)
+        {
+            WriteLine(error.Message + $"\n[at line {error.Token.Line}]");
+            hadRuntimeError = true;
         }
 
         #endregion
