@@ -9,7 +9,36 @@ namespace lox
     /// </summary>
     public class Interpreter : Expr.IVisitor<object?>
     {
+        /// <summary>
+        /// Gets the last error encountered while interpreting.
+        /// </summary>
+        public RuntimeError? LastError
+        {
+            get;
+            private set;
+        }
+
         #region Instance Methods
+
+        public object? Interpret(Expr expr,
+                                 in ReadOnlySpan<char> source)
+        {
+            try
+            {
+                this.LastError = null;
+                object? value = this.Evaluate(expr,
+                                              source);
+                Console.WriteLine(this.Stringify(value));
+
+                return value;
+            }
+            catch(RuntimeError runtimeError)
+            {
+                this.LastError = runtimeError;
+                return null;
+            }
+        }
+
         #endregion
 
         #region Expression visitors
@@ -202,6 +231,24 @@ namespace lox
                 false => false,
                 _ => true
             };
+        }
+
+        private string Stringify(object? value)
+        {
+            if (value is double doubleValue)
+            {
+                string text = doubleValue.ToString();
+
+                if (text.EndsWith(".0"))
+                {
+                    text = text.Substring(0,
+                                          text.Length - 2);
+                }
+
+                return text;
+            }
+
+            return value?.ToString() ?? "nil";
         }
 
         #endregion

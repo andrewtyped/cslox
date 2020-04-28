@@ -20,10 +20,8 @@ namespace lox.test.interpreter
         protected object? Interpret(string source)
         {
             var expr = this.Parse(source);
-            var value = expr.Accept(this.Interpreter,
-                                    source);
-
-            return value;
+            return this.Interpreter.Interpret(expr,
+                                              source);
         }
 
         protected Expr Parse(string source)
@@ -53,14 +51,21 @@ namespace lox.test.interpreter
             try
             {
                 var value = this.Interpret(source);
-                Assert.Fail($"Expected source '{source}' to cause runtime error");
+
+
+                Assert.IsNotNull(this.Interpreter.LastError,
+                                 $"Expected source '{source}' to cause runtime error");
+
+                RuntimeError error = this.Interpreter.LastError!;
+
+                Assert.IsTrue(error.Message.Contains(expectedError),
+                              $"Expected runtime error message '{error.Message}' to contain '{expectedError}'");
             }
             catch(RuntimeError runtimeError)
             {
                 Assert.AreEqual(op,
                                 runtimeError.Token.Type);
-                Assert.IsTrue(runtimeError.Message.Contains(expectedError),
-                              $"Expected runtime error message '{runtimeError.Message}' to contain '{expectedError}'");
+                
             }
         }
 
