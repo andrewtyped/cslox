@@ -151,5 +151,49 @@ namespace lox.test.interpreter
             this.AssertExpression(source,
                                   expectedValue);
         }
+
+        [DataTestMethod]
+        [DataRow("1 > 2",
+                 false)]
+        [DataRow("4 > 3",
+                 true)]
+        [DataRow("4 > 4",
+                 false)]
+        [DataRow("1 < 2",
+                 true)]
+        [DataRow("4 < 3",
+                 false)]
+        [DataRow("4 < 4",
+                 false)]
+        [DataRow("1 >= 2",
+                 false)]
+        [DataRow("4 >= 3",
+                 true)]
+        [DataRow("4 >= 4",
+                 true)]
+        [DataRow("1 <= 2",
+                 true)]
+        [DataRow("4 <= 3",
+                 false)]
+        [DataRow("4 <= 4",
+                 true)]
+        [DataRow("nil > 1", false)]
+        [DataRow("nil < 1", false)]
+        [DataRow("nil >= 1", false)]
+        [DataRow("nil <= 1", false)]
+        [DataRow("1 > nil", false)]
+        [DataRow("1 < nil", false)]
+        [DataRow("1 >= nil", false)]
+        [DataRow("1 <= nil", false)]
+        [DataRow("nil > nil", false)]
+        [DataRow("nil < nil", false)]
+        [DataRow("nil >= nil", false)]
+        [DataRow("nil <= nil", false)]
+        public void CanInterpretComparisonExpressions(string source,
+                                                      object expectedValue)
+        {
+            this.AssertExpression(source,
+                                  expectedValue);
+        }
     }
 }

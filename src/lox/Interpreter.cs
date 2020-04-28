@@ -24,6 +24,10 @@ namespace lox
 
             return expr.op.Type switch
             {
+                GREATER => (double?)left > (double?)right,
+                LESS => (double?)left < (double?)right,
+                GREATER_EQUAL => (double?)left >= (double?)right,
+                LESS_EQUAL => (double?)left <= (double?)right,
                 MINUS => (double?)left - (double?)right,
                 SLASH => (double?)left / (double?)right,
                 STAR => (double?)left * (double?)right,
