@@ -24,6 +24,8 @@ namespace lox
 
             return expr.op.Type switch
             {
+                EQUAL_EQUAL => this.IsEqual(left, right),
+                BANG_EQUAL => !this.IsEqual(left, right),
                 GREATER => (double?)left > (double?)right,
                 LESS => (double?)left < (double?)right,
                 GREATER_EQUAL => (double?)left >= (double?)right,
@@ -97,6 +99,21 @@ namespace lox
         {
             return expr.Accept(this,
                                source);
+        }
+
+        private bool IsEqual(object? left, object? right)
+        {
+            if(left is null && right is null)
+            {
+                return true;
+            }
+
+            if(left is null)
+            {
+                return false;
+            }
+
+            return left.Equals(right);
         }
 
         private bool IsTruthy(object? value,

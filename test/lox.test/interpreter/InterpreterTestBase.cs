@@ -195,5 +195,29 @@ namespace lox.test.interpreter
             this.AssertExpression(source,
                                   expectedValue);
         }
+
+        [DataTestMethod]
+        [DataRow("1 == 1", true)]
+        [DataRow("1 == 2", false)]
+        [DataRow("1 == \"1\"", false)]
+        [DataRow("1 == true", false)]
+        [DataRow("1 == false", false)]
+        [DataRow("1 == nil", false)]
+        [DataRow("nil == 1", false)]
+        [DataRow("1 != 1", false)]
+        [DataRow("1 != 2", true)]
+        [DataRow("1 != \"1\"", true)]
+        [DataRow("1 != true", true)]
+        [DataRow("1 != true", true)]
+        [DataRow("1 != nil", true)]
+        [DataRow("nil != 1", true)]
+        [DataRow("nil == nil", true)]
+        [DataRow("nil != nil", false)]
+        public void CanInterpretEqualityExpressions(string source,
+                                                    object expectedValue)
+        {
+            this.AssertExpression(source,
+                                  expectedValue);
+        }
     }
 }
