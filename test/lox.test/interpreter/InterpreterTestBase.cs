@@ -1,6 +1,8 @@
 ﻿using System.Linq;
-
+using lox.constants;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using static lox.constants.TokenType;
 
 namespace lox.test.interpreter
 {
@@ -42,6 +44,24 @@ namespace lox.test.interpreter
             var value = this.Interpret(source);
             Assert.AreEqual(expectedValue,
                             value);
+        }
+
+        protected void AssertRuntimeError(string source,
+                                          TokenType op,
+                                          string expectedError)
+        {
+            try
+            {
+                var value = this.Interpret(source);
+                Assert.Fail($"Expected source '{source}' to cause runtime error");
+            }
+            catch(RuntimeError runtimeError)
+            {
+                Assert.AreEqual(op,
+                                runtimeError.Token.Type);
+                Assert.IsTrue(runtimeError.Message.Contains(expectedError),
+                              $"Expected runtime error message '{runtimeError.Message}' to contain '{expectedError}'");
+            }
         }
 
         #endregion
@@ -218,6 +238,18 @@ namespace lox.test.interpreter
         {
             this.AssertExpression(source,
                                   expectedValue);
+        }
+
+        [DataTestMethod]
+        [DataRow("1 + true", PLUS, "Operands must be two numbers or two strings.")]
+        [DataRow("1 - true", MINUS, "Operand must be a number.")]
+        [DataRow("1 * \"1\"", STAR, "Operand must be a number.")]
+        [DataRow("1 / false", SLASH, "Operand must be a number.")]
+        public void CanThrowRuntimeErrorsForInvalidArithmetic(string source, TokenType opType, string expectedError)
+        {
+            this.AssertRuntimeError(source,
+                                    opType,
+                                    expectedError);
         }
     }
 }

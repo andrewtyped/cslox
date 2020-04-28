@@ -22,6 +22,14 @@ namespace lox
             object? right = this.Evaluate(expr.right,
                                           source);
 
+            double? CalculateLocal(Func<double, double, double> calculation)
+            {
+                return this.Calculate(expr.op,
+                                      left,
+                                      right,
+                                      calculation);
+            }
+
             return expr.op.Type switch
             {
                 EQUAL_EQUAL => this.IsEqual(left, right),
@@ -30,15 +38,16 @@ namespace lox
                 LESS => (double?)left < (double?)right,
                 GREATER_EQUAL => (double?)left >= (double?)right,
                 LESS_EQUAL => (double?)left <= (double?)right,
-                MINUS => (double?)left - (double?)right,
-                SLASH => (double?)left / (double?)right,
-                STAR => (double?)left * (double?)right,
-                PLUS => this.VisitBinaryPlusOperands(left, right),
+                MINUS => CalculateLocal((a, b) => a - b),
+                SLASH => CalculateLocal((a, b) => a / b),
+                STAR => CalculateLocal((a, b) => a * b),
+                PLUS => this.VisitBinaryPlusOperands(expr.op, left, right),
                 _ => null
             };
         }
 
-        private object? VisitBinaryPlusOperands(object? left,
+        private object? VisitBinaryPlusOperands(Token op,
+                                                object? left,
                                                 object? right)
         {
             if (left is null
@@ -59,7 +68,8 @@ namespace lox
                 return stringLeft + stringRight;
             }
 
-            return null;
+            throw new RuntimeError(op,
+                                   "Operands must be two numbers or two strings.");
         }
 
         public object? VisitGroupingExpr(Expr.Grouping expr,
@@ -93,6 +103,26 @@ namespace lox
         #endregion
 
         #region Utilities
+
+        private double? Calculate(Token op,
+                                  object? left,
+                                  object? right,
+                                  Func<double, double, double> calculation)
+        {
+            if(left is null || right is null)
+            {
+                return null;
+            }
+
+            if(left is double doubleLeft && right is double doubleRight)
+            {
+                return calculation(doubleLeft,
+                                   doubleRight);
+            }
+
+            throw new RuntimeError(op,
+                                   "Operand must be a number.");
+        }
 
         private object? Evaluate(Expr expr,
                                  in ReadOnlySpan<char> source)
