@@ -30,14 +30,22 @@ namespace lox
                                       calculation);
             }
 
+            bool CompareLocal(Func<double, double, bool> comparison)
+            {
+                return this.Compare(expr.op,
+                                    left,
+                                    right,
+                                    comparison);
+            }
+
             return expr.op.Type switch
             {
                 EQUAL_EQUAL => this.IsEqual(left, right),
                 BANG_EQUAL => !this.IsEqual(left, right),
-                GREATER => (double?)left > (double?)right,
-                LESS => (double?)left < (double?)right,
-                GREATER_EQUAL => (double?)left >= (double?)right,
-                LESS_EQUAL => (double?)left <= (double?)right,
+                GREATER => CompareLocal((a, b) => a > b),
+                LESS => CompareLocal((a, b) => a < b),
+                GREATER_EQUAL => CompareLocal((a, b) => a >= b),
+                LESS_EQUAL => CompareLocal((a, b) => a <= b),
                 MINUS => CalculateLocal((a, b) => a - b),
                 SLASH => CalculateLocal((a, b) => a / b),
                 STAR => CalculateLocal((a, b) => a * b),
@@ -93,7 +101,8 @@ namespace lox
 
             return expr.op.Type switch
             {
-                MINUS => -((double?)right),
+                MINUS => this.Negate(expr.op,
+                                     right),
                 BANG => !this.IsTruthy(right,
                                        source),
                 _ => null
@@ -104,24 +113,62 @@ namespace lox
 
         #region Utilities
 
+        private double? Negate(Token token, object? value)
+        {
+            if(value is double doubleValue)
+            {
+                return -doubleValue;
+            }
+
+            if(value is null)
+            {
+                return null;
+            }
+
+            throw new RuntimeError(token,
+                                   "Operand must be a number.");
+        }
+
         private double? Calculate(Token op,
                                   object? left,
                                   object? right,
                                   Func<double, double, double> calculation)
         {
-            if(left is null || right is null)
-            {
-                return null;
-            }
-
             if(left is double doubleLeft && right is double doubleRight)
             {
                 return calculation(doubleLeft,
                                    doubleRight);
             }
 
+            if(left is null || right is null)
+            {
+                return null;
+            }
+
             throw new RuntimeError(op,
-                                   "Operand must be a number.");
+                                   "Operands must be numbers.");
+        }
+
+        private bool Compare(Token op,
+                             object? left,
+                             object? right,
+                             Func<double, double, bool> comparison)
+        {
+            if (left is double doubleLeft
+                && right is double doubleRight)
+            {
+                return comparison(doubleLeft,
+                                  doubleRight);
+            }
+
+            if (left is null
+                || right is null)
+            {
+                return false;
+            }
+
+            throw new RuntimeError(op,
+                                   "Operands must be numbers.");
         }
 
         private object? Evaluate(Expr expr,

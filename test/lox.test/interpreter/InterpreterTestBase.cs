@@ -134,6 +134,18 @@ namespace lox.test.interpreter
             Assert.AreEqual(expectedValue,
                             value);
         }
+
+        [DataTestMethod]
+        [DataRow("-true")]
+        [DataRow("-false")]
+        [DataRow("-\"1\"")]
+        public void CanThrowRuntimeErrorForInvalidUnaryNegation(string source)
+        {
+            this.AssertRuntimeError(source,
+                                    MINUS,
+                                    "Operand must be a number.");
+        }
+
     }
 
     [TestClass]
@@ -242,14 +254,30 @@ namespace lox.test.interpreter
 
         [DataTestMethod]
         [DataRow("1 + true", PLUS, "Operands must be two numbers or two strings.")]
-        [DataRow("1 - true", MINUS, "Operand must be a number.")]
-        [DataRow("1 * \"1\"", STAR, "Operand must be a number.")]
-        [DataRow("1 / false", SLASH, "Operand must be a number.")]
+        [DataRow("1 - true", MINUS, "Operands must be numbers.")]
+        [DataRow("1 * \"1\"", STAR, "Operands must be numbers.")]
+        [DataRow("1 / false", SLASH, "Operands must be numbers.")]
         public void CanThrowRuntimeErrorsForInvalidArithmetic(string source, TokenType opType, string expectedError)
         {
             this.AssertRuntimeError(source,
                                     opType,
                                     expectedError);
+        }
+
+        [DataTestMethod]
+        [DataRow("1 > true", GREATER)]
+        [DataRow("1 < true", LESS)]
+        [DataRow("1 >= true", GREATER_EQUAL)]
+        [DataRow("1 <= true", LESS_EQUAL)]
+        [DataRow("true > 1", GREATER)]
+        [DataRow("true < 1", LESS)]
+        [DataRow("true >= 1", GREATER_EQUAL)]
+        [DataRow("true <= 1", LESS_EQUAL)]
+        public void CanThrowRuntimeErrorForInvalidComparison(string source, TokenType opType)
+        {
+            this.AssertRuntimeError(source,
+                                    opType,
+                                    "Operands must be numbers.");
         }
     }
 }
