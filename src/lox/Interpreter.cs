@@ -17,11 +17,47 @@ namespace lox
         public object? VisitBinaryExpr(Expr.Binary expr,
                                       in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? left = this.Evaluate(expr.left,
+                                         source);
+            object? right = this.Evaluate(expr.right,
+                                          source);
+
+            return expr.op.Type switch
+            {
+                MINUS => (double?)left - (double?)right,
+                SLASH => (double?)left / (double?)right,
+                STAR => (double?)left * (double?)right,
+                PLUS => this.VisitBinaryPlusOperands(left, right),
+                _ => null
+            };
+        }
+
+        private object? VisitBinaryPlusOperands(object? left,
+                                                object? right)
+        {
+            if (left is null
+                || right is null)
+            {
+                return null;
+            }
+
+            if (left is double doubleLeft
+                && right is double doubleRight)
+            {
+                return doubleLeft + doubleRight;
+            }
+
+            if (left is string stringLeft
+                && right is string stringRight)
+            {
+                return stringLeft + stringRight;
+            }
+
+            return null;
         }
 
         public object? VisitGroupingExpr(Expr.Grouping expr,
-                                        in ReadOnlySpan<char> source)
+                                         in ReadOnlySpan<char> source)
         {
             return this.Evaluate(expr.expression,
                                  source);

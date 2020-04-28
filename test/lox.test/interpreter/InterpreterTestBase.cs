@@ -36,6 +36,14 @@ namespace lox.test.interpreter
             return expr;
         }
 
+        protected void AssertExpression(string source,
+                                        object expectedValue)
+        {
+            var value = this.Interpret(source);
+            Assert.AreEqual(expectedValue,
+                            value);
+        }
+
         #endregion
     }
 
@@ -78,7 +86,7 @@ namespace lox.test.interpreter
     }
 
     [TestClass]
-    public class UnaryInterpretaionTest : InterpreterTestBase
+    public class UnaryInterpretationTest : InterpreterTestBase
     {
         [DataTestMethod]
         [DataRow("-42", -42d)]
@@ -105,6 +113,43 @@ namespace lox.test.interpreter
             var value = this.Interpret(source);
             Assert.AreEqual(expectedValue,
                             value);
+        }
+    }
+
+    [TestClass]
+    public class BinaryInterpretationTest : InterpreterTestBase
+    {
+        [DataTestMethod]
+        [DataRow("3 * 4", 12d)]
+        [DataRow("9 / 6", 1.5d)]
+        [DataRow("10 - 3", 7d)]
+        [DataRow("23 + 51", 74d)]
+        [DataRow("1 + 2 + 5.5", 8.5d)]
+        [DataRow("2 + 2 * 4", 10d)]
+        [DataRow("1 + 2 / 4 + 1", 2.5d)]
+        [DataRow("(1 + 2) / (4 + 1)", 0.6d)]
+        [DataRow("1 + nil", null)]
+        [DataRow("nil + 1", null)]
+        [DataRow("nil + nil", null)]
+        public void CanInterpretArithmeticExpressions(string source,
+                                                      object expectedValue)
+        {
+            this.AssertExpression(source,
+                                  expectedValue);
+        }
+
+        [DataTestMethod]
+        [DataRow("\"Hello\" + \" world\"",
+                 "Hello world")]
+        [DataRow("nil + \" world\"",
+                 null)]
+        [DataRow("\"Hello\" + nil",
+                 null)]
+        public void CanInterpretStringConcatenationExpressions(string source,
+                                                               object expectedValue)
+        {
+            this.AssertExpression(source,
+                                  expectedValue);
         }
     }
 }
