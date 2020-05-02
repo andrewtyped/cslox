@@ -27,6 +27,14 @@ namespace tool
                           "Unary    : Token op, Expr right"
                       });
 
+            DefineAst(outputDir,
+                      "Stmt",
+                      new List<string>
+                      {
+                          "Expression : Expr expression",
+                          "Print      : Expr expression"
+                      });
+
             return 0;
         }
 
