@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace lox
@@ -6,9 +7,25 @@ namespace lox
     /// <summary>
     /// Expression visitor capable of rendering a lox AST as a string which illustrates the tree's structure.
     /// </summary>
-    public class AstPrinter : Expr.IVisitor<string>
+    public class AstPrinter : Expr.IVisitor<string>, Stmt.IVisitor<string>
     {
         #region Instance Methods
+
+        public string Print(List<Stmt> stmts,
+                            in ReadOnlySpan<char> source)
+        {
+            var sb = new StringBuilder();
+
+            for(int i = 0; i < stmts.Count; i++)
+            {
+                sb.AppendLine(stmts[i]
+                                  .Accept(this,
+                                          source));
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
 
         public string Print(Expr expr,
                             in ReadOnlySpan<char> source)
@@ -16,6 +33,27 @@ namespace lox
             return expr.Accept(this,
                                source);
         }
+
+        #endregion
+
+        #region Statement visitors
+
+        public string VisitExpressionStmt(Stmt.Expression stmt,
+                                          in ReadOnlySpan<char> source)
+        {
+            return stmt.expression.Accept(this,
+                                          source);
+        }
+
+        public string VisitPrintStmt(Stmt.Print stmt,
+                                     in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Expression visitors
 
         public string VisitBinaryExpr(Expr.Binary expr,
                                       in ReadOnlySpan<char> source)

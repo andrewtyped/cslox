@@ -20,7 +20,7 @@ namespace lox
 
         #region Instance Methods
 
-        public Expr Parse(in ScannedSource source)
+        public List<Stmt> Parse(in ScannedSource source)
         {
             try
             {
@@ -34,12 +34,15 @@ namespace lox
                     statements.Add(this.Statement(source));
                 }
 
-                return (statements.First() as Stmt.Expression)!.expression;
+                return statements;
             }
-            catch(ParseError parseError)
+            catch (ParseError parseError)
             {
                 this.parseErrors.Add(parseError);
-                return new Literal(null);
+                return new List<Stmt>
+                       {
+                           new Stmt.Expression(new Literal(null))
+                       };
             }
         }
 

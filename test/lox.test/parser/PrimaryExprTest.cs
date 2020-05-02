@@ -10,57 +10,40 @@ namespace lox.test.parser
         #region Instance Methods
 
         [DataTestMethod]
-        [DataRow(true)]
-        [DataRow(false)]
-        public void CanParseBooleanLiteralExpression(bool boolean)
+        [DataRow("true", true)]
+        [DataRow("false", false)]
+        public void CanParseBooleanLiteralExpression(string boolean, bool expected)
         {
-            var scannedSource = this.ScanBoolean(boolean);
-            var expr = this.parser.Parse(scannedSource);
+            var literalExpr = this.AssertExpr<Literal>(boolean);
 
-            var literalExpr = expr as Literal;
-
-            Assert.IsNotNull(literalExpr);
-            Assert.AreEqual(boolean,
+            Assert.AreEqual(expected,
                             literalExpr!.value);
         }
 
         [TestMethod]
         public void CanParseNilExpression()
         {
-            var scannedSource = this.Scan("nil");
-            var expr = this.parser.Parse(scannedSource);
+            var literalExpr = this.AssertExpr<Literal>("nil");
 
-            var literalExpr = expr as Literal;
-
-            Assert.IsNotNull(literalExpr);
-            Assert.IsNull(literalExpr!.value);
+            Assert.IsNull(literalExpr.value);
         }
 
         [TestMethod]
         public void CanParseNumericLiteralExpression()
         {
-            double number = 42;
-            var scannedSource = this.ScanPrimary(number);
-            var expr = this.parser.Parse(scannedSource);
+            var literalExpr = this.AssertExpr<Literal>("42");
 
-            var literalExpr = expr as Literal;
-
-            Assert.IsNotNull(literalExpr);
-            Assert.AreEqual(number,
+            Assert.AreEqual(42d,
                             literalExpr!.value);
         }
 
         [TestMethod]
         public void CanParseStringLiteralExpression()
         {
-            var @string = "My string";
-            var scannedSource = this.ScanString(@string);
-            var expr = this.parser.Parse(scannedSource);
+            var @string = "\"My string\"";
+            var literalExpr = this.AssertExpr<Literal>(@string);
 
-            var literalExpr = expr as Literal;
-
-            Assert.IsNotNull(literalExpr);
-            Assert.AreEqual(@string,
+            Assert.AreEqual("My string",
                             literalExpr!.value);
         }
 

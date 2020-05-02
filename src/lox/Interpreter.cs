@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using static lox.constants.TokenType;
 
 namespace lox
@@ -7,7 +7,7 @@ namespace lox
     /// <summary>
     /// Evaluates a Lox AST and produces its value.
     /// </summary>
-    public class Interpreter : Expr.IVisitor<object?>
+    public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<Void>
     {
         /// <summary>
         /// Gets the last error encountered while interpreting.
@@ -18,26 +18,57 @@ namespace lox
             private set;
         }
 
+        /// <summary>
+        /// Gets the last value evaluated by the interpreter.
+        /// </summary>
+        public object? LastValue
+        {
+            get;
+            private set;
+        }
+
         #region Instance Methods
 
-        public object? Interpret(Expr expr,
-                                 in ReadOnlySpan<char> source)
+        public void Interpret(List<Stmt> stmts,
+                              in ReadOnlySpan<char> source)
         {
             try
             {
                 this.LastError = null;
-                object? value = this.Evaluate(expr,
-                                              source);
-                Console.WriteLine(this.Stringify(value));
 
-                return value;
+                for (int i = 0;
+                     i < stmts.Count;
+                     i++)
+                {
+                    stmts[i]
+                        .Accept(this,
+                                source);
+                }
             }
-            catch(RuntimeError runtimeError)
+            catch (RuntimeError runtimeError)
             {
                 this.LastError = runtimeError;
                 Lox.RuntimeError(runtimeError);
-                return null;
             }
+        }
+
+        #endregion
+
+        #region Statement visitors
+
+        public Void VisitExpressionStmt(Stmt.Expression stmt,
+                                         in ReadOnlySpan<char> source)
+        {
+            this.LastValue = this.Evaluate(stmt.expression,
+                                           source);
+
+            return default;
+        }
+
+        public Void VisitPrintStmt(Stmt.Print stmr,
+                                   in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

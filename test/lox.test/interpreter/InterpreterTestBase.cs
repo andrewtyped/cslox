@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using lox.constants;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,21 +20,23 @@ namespace lox.test.interpreter
 
         protected object? Interpret(string source)
         {
-            var expr = this.Parse(source);
-            return this.Interpreter.Interpret(expr,
-                                              source);
+            var stmts = this.Parse(source);
+            this.Interpreter.Interpret(stmts,
+                                       source);
+
+            return this.Interpreter.LastValue;
         }
 
-        protected Expr Parse(string source)
+        protected List<Stmt> Parse(string source)
         {
             var scanner = new Scanner();
             var parser = new Parser();
 
             var scannedTokens = scanner.ScanTokens(source);
-            var expr = parser.Parse(new ScannedSource(scannedTokens.ToArray(),
-                                                      source));
+            var stmts = parser.Parse(new ScannedSource(scannedTokens.ToArray(),
+                                                       source));
 
-            return expr;
+            return stmts;
         }
 
         protected void AssertExpression(string source,

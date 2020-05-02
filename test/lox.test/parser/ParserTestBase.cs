@@ -21,19 +21,26 @@ namespace lox.test.parser
                                  string expectedAst)
         {
             var scannedSource = this.Scan(source);
-            var expr = this.parser.Parse(scannedSource);
-            var actualAst = this.astPrinter.Print(expr,
+            var stmts = this.parser.Parse(scannedSource);
+            var actualAst = this.astPrinter.Print(stmts,
                                                   scannedSource.Source);
 
             Assert.AreEqual(expectedAst,
-                            actualAst);
+                            actualAst.Trim());
+        }
+
+        protected T AssertExpr<T>(string source)
+            where T : Expr
+        {
+            var scannedSource = this.Scan(source);
+            return this.AssertExpr<T>(scannedSource);
         }
 
         protected T AssertExpr<T>(ScannedSource source)
             where T : Expr
         {
-            var expr = this.parser.Parse(source);
-            return this.AssertExpr<T>(expr);
+            var stmts = this.parser.Parse(source);
+            return this.AssertExpr<T>((stmts.Single() as Stmt.Expression)!.expression);
         }
 
         protected T AssertExpr<T>(Expr expr)
