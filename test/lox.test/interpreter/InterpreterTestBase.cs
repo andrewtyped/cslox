@@ -18,11 +18,17 @@ namespace lox.test.interpreter
 
         protected object? Interpret(string source)
         {
+            return this.InterpretStmts(source)
+                       .FirstOrDefault();
+        }
+
+        protected List<object?> InterpretStmts(string source)
+        {
             var stmts = this.Parse(source);
             this.Interpreter.Interpret(stmts,
                                        source);
 
-            return this.Interpreter.Values.FirstOrDefault();
+            return this.Interpreter.Values;
         }
 
         protected List<Stmt> Parse(string source)
