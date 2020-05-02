@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using lox.constants;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace lox.test.interpreter
@@ -10,11 +12,51 @@ namespace lox.test.interpreter
     {
         #region Fields
 
-        protected Interpreter Interpreter = new Interpreter();
+        protected MockConsole Console;
+
+        protected Interpreter Interpreter;
 
         #endregion
 
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            this.Console = new MockConsole();
+            this.Interpreter = new Interpreter(this.Console);
+        }
+
         #region Instance Methods
+
+        protected void AssertExpression(string source,
+                                        object expectedValue)
+        {
+            var value = this.Interpret(source);
+            Assert.AreEqual(expectedValue,
+                            value);
+        }
+
+        protected void AssertRuntimeError(string source,
+                                          TokenType op,
+                                          string expectedError)
+        {
+            try
+            {
+                var value = this.Interpret(source);
+
+                Assert.IsNotNull(this.Interpreter.LastError,
+                                 $"Expected source '{source}' to cause runtime error");
+
+                RuntimeError error = this.Interpreter.LastError!;
+
+                Assert.IsTrue(error.Message.Contains(expectedError),
+                              $"Expected runtime error message '{error.Message}' to contain '{expectedError}'");
+            }
+            catch (RuntimeError runtimeError)
+            {
+                Assert.AreEqual(op,
+                                runtimeError.Token.Type);
+            }
+        }
 
         protected object? Interpret(string source)
         {
@@ -43,37 +85,34 @@ namespace lox.test.interpreter
             return stmts;
         }
 
-        protected void AssertExpression(string source,
-                                        object expectedValue)
+        #endregion
+
+        #region Nested type: MockConsole
+
+        protected class MockConsole : IConsole
         {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
-        }
+            #region Instance Properties
 
-        protected void AssertRuntimeError(string source,
-                                          TokenType op,
-                                          string expectedError)
-        {
-            try
+            public List<string> Writes
             {
-                var value = this.Interpret(source);
+                get;
+            } = new List<string>();
 
+            #endregion
 
-                Assert.IsNotNull(this.Interpreter.LastError,
-                                 $"Expected source '{source}' to cause runtime error");
+            #region Instance Methods
 
-                RuntimeError error = this.Interpreter.LastError!;
-
-                Assert.IsTrue(error.Message.Contains(expectedError),
-                              $"Expected runtime error message '{error.Message}' to contain '{expectedError}'");
-            }
-            catch(RuntimeError runtimeError)
+            public void Write(string text)
             {
-                Assert.AreEqual(op,
-                                runtimeError.Token.Type);
-                
+                this.Writes.Add(text);
             }
+
+            public void WriteLine(string text)
+            {
+                this.Writes.Add(text);
+            }
+
+            #endregion
         }
 
         #endregion

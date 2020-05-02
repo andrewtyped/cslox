@@ -59,9 +59,24 @@ namespace lox
 
         #region GrammarRules
 
-        private Stmt Statement(in ScannedSource scannedSource)
+        private Stmt Statement(in ScannedSource source)
         {
-            return this.ExpressionStatement(scannedSource);
+            if (this.Match(source,
+                           PRINT))
+            {
+                return this.PrintStatement(source);
+            }
+
+            return this.ExpressionStatement(source);
+        }
+
+        private Stmt PrintStatement(in ScannedSource source)
+        {
+            Expr value = this.Expression(source);
+            this.Consume(source,
+                         SEMICOLON,
+                         "Expect ';' after value");
+            return new Stmt.Print(value);
         }
 
         private Stmt ExpressionStatement(in ScannedSource source)
