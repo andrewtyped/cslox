@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -54,6 +56,13 @@ namespace lox.test.parser
             return expectedExpr!;
         }
 
+        protected void AssertParseErrors2(string source,
+                                         params string[] containsMessages)
+        {
+            this.Parse(source);
+            this.AssertParseErrors(containsMessages);
+        }
+
         protected void AssertParseErrors(params string[] containsMessages)
         {
             var parseErrors = this.parser.ParseErrors.ToList();
@@ -70,6 +79,36 @@ namespace lox.test.parser
                 Assert.IsTrue(parseError.Message.Contains(containsMessage),
                               $"Expected parse error '{parseError.Message}' to contain text '{containsMessage}'");
             }
+        }
+
+        protected List<Stmt> AssertStmts(string source,
+                                         params Type[] expectedSmtTypes)
+        {
+            var scannedSource = this.Scan(source);
+            var stmts = this.parser.Parse(scannedSource);
+
+            Assert.AreEqual(expectedSmtTypes.Length,
+                            stmts.Count,
+                            "Stmts length");
+
+            for (int i = 0;
+                 i < stmts.Count;
+                 i++)
+            {
+                Assert.AreEqual(expectedSmtTypes[i],
+                                stmts[i]
+                                    .GetType(),
+                                $"Stmt type at index {i}");
+            }
+
+            return stmts;
+        }
+
+        protected List<Stmt> Parse(string source)
+        {
+            var scannedSource = this.Scan(source);
+            var stmts = this.parser.Parse(scannedSource);
+            return stmts;
         }
 
         protected ScannedSource Scan(string source)
