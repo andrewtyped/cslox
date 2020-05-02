@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using lox.constants;
 
 using static lox.constants.TokenType;
@@ -25,7 +26,15 @@ namespace lox
             {
                 this.current = 0;
                 this.parseErrors.Clear();
-                return this.Expression(source);
+
+                var statements = new List<Stmt>();
+
+                while (!this.IsAtEnd(source))
+                {
+                    statements.Add(this.Statement(source));
+                }
+
+                return (statements.First() as Stmt.Expression)!.expression;
             }
             catch(ParseError parseError)
             {
@@ -46,6 +55,34 @@ namespace lox
         #endregion
 
         #region GrammarRules
+
+        private Stmt Statement(in ScannedSource scannedSource)
+        {
+            return this.ExpressionStatement(scannedSource);
+        }
+
+        private Stmt ExpressionStatement(in ScannedSource source)
+        {
+            Expr expr = this.Expression(source);
+
+            if(this.Match(source, SEMICOLON))
+            {
+                return new Stmt.Expression(expr);
+            }
+
+            //TODO: This is not quite right. I am attempting to support expression
+            //evaluation at the REPL without a semicolon. This works, but it also
+            //allows the final statement in a sequence of loose statements to appear
+            //without a semicolon.
+            if (this.IsAtEnd(source))
+            {
+                return new Stmt.Expression(expr);
+            }
+
+            throw this.Error(source,
+                             this.Peek(source),
+                             "Expect ';' after expression.");
+        }
 
         private Expr Expression(in ScannedSource source) => this.Equality(source);
 
