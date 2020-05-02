@@ -22,7 +22,7 @@ namespace lox.test.interpreter
             this.Interpreter.Interpret(stmts,
                                        source);
 
-            return this.Interpreter.LastValue;
+            return this.Interpreter.Values.FirstOrDefault();
         }
 
         protected List<Stmt> Parse(string source)

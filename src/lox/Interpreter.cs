@@ -7,7 +7,8 @@ namespace lox
     /// <summary>
     /// Evaluates a Lox AST and produces its value.
     /// </summary>
-    public class Interpreter : Expr.IVisitor<object?>, Stmt.IVisitor<Void>
+    public class Interpreter : Expr.IVisitor<object?>,
+                               Stmt.IVisitor<Void>
     {
         /// <summary>
         /// Gets the last error encountered while interpreting.
@@ -19,13 +20,13 @@ namespace lox
         }
 
         /// <summary>
-        /// Gets the last value evaluated by the interpreter.
+        /// Gets the values evaluated by the interpreter.
         /// </summary>
-        public object? LastValue
+        public List<object?> Values
         {
             get;
             private set;
-        }
+        } = new List<object?>();
 
         #region Instance Methods
 
@@ -35,6 +36,7 @@ namespace lox
             try
             {
                 this.LastError = null;
+                this.Values.Clear();
 
                 for (int i = 0;
                      i < stmts.Count;
@@ -59,8 +61,10 @@ namespace lox
         public Void VisitExpressionStmt(Stmt.Expression stmt,
                                          in ReadOnlySpan<char> source)
         {
-            this.LastValue = this.Evaluate(stmt.expression,
-                                           source);
+            var value = this.Evaluate(stmt.expression,
+                                      source);
+
+            this.Values.Add(value);
 
             return default;
         }
