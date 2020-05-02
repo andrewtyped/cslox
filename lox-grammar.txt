@@ -42,9 +42,11 @@ bread     -> "toast" | "biscuits" | "English muffin" ;
 // ======================
 
 This section adds expression and print statements to the grammar
-so we can assign variables and write to the console.
+so we can assign variables and write to the console. I've also
+added custom support for executing a single expression so that
+semicolons aren't required in the REPL.
 
-program -> statement* EOF ;
+program -> (statement* | expression) EOF ;
 
 statement -> exprStmt
              | printStmt ;
