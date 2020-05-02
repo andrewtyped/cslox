@@ -38,6 +38,30 @@ bread     -> "toast" | "biscuits" | "English muffin" ;
 
 =========================================*/
 
+// Section 8.1 Statements
+// ======================
+
+This section adds expression and print statements to the grammar
+so we can assign variables and write to the console.
+
+program -> statement* EOF ;
+
+statement -> exprStmt
+             | printStmt ;
+
+exprStmt -> expression ";" ;
+printStmt -> "print" expression ";";
+
+expression -> equality;
+equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication -> unary ( ( "/" | "*" ) unary )* ;
+unary -> ( "!" | "-" ) unary
+         | primary ;
+primary -> NUMBER | STRING | "false" | "true" | "nil"
+           | "(" expression ")" ;
+
 
 // Section 6.1 Ambiguity and the Parsing Game
 // ===========================================
