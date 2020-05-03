@@ -21,11 +21,12 @@ namespace tool
                       "Expr",
                       new List<string>
                       {
+                          "Assign   : Token name, Expr value",
                           "Binary   : Expr left, Token op, Expr right",
                           "Grouping : Expr expression",
                           "Literal  : object? value",
                           "Unary    : Token op, Expr right",
-                          "Variable : Token name"
+                          "Variable : Token name",
                       });
 
             DefineAst(outputDir,

@@ -126,6 +126,12 @@ namespace lox
                                         expr.name);
         }
 
+        public object? VisitAssignExpr(Expr.Assign expr,
+                                       in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitBinaryExpr(Expr.Binary expr,
                                        in ReadOnlySpan<char> source)
         {

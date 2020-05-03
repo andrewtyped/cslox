@@ -62,6 +62,14 @@ namespace lox
 
         #region Expression visitors
 
+        public string VisitAssignExpr(Expr.Assign expr,
+                                      in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize($"assign {expr.name.GetLexeme(source).ToString()}",
+                                     source,
+                                     expr.value);
+        }
+
         public string VisitVariableExpr(Expr.Variable expr,
                                         in ReadOnlySpan<char> source)
         {

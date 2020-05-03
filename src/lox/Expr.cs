@@ -11,12 +11,32 @@ namespace lox
     {
         public interface IVisitor<R>
         {
+            R VisitAssignExpr(Assign expr, in ReadOnlySpan<char> source);
             R VisitBinaryExpr(Binary expr, in ReadOnlySpan<char> source);
             R VisitGroupingExpr(Grouping expr, in ReadOnlySpan<char> source);
             R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
             R VisitUnaryExpr(Unary expr, in ReadOnlySpan<char> source);
             R VisitVariableExpr(Variable expr, in ReadOnlySpan<char> source);
         }
+
+        public class Assign : Expr
+        {
+            public Assign( Token name, Expr value )
+            {
+                this.name = name;
+                this.value = value;
+            }
+
+            public readonly Token name;
+
+            public readonly Expr value;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitAssignExpr(this, source);
+            }
+        }
+
 
         public class Binary : Expr
         {
