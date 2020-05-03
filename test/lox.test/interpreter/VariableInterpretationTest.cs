@@ -66,6 +66,16 @@ namespace lox.test.interpreter
                                 null);
         }
 
+        [TestMethod]
+        public void CanInterpretVariableExpression()
+        {
+            var source = @"var foo = 1; print foo;";
+
+            this.Interpret(source);
+
+            this.AssertPrints("1");
+        }
+
         #endregion
     }
 }

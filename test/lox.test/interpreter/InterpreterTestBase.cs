@@ -36,6 +36,20 @@ namespace lox.test.interpreter
                             value);
         }
 
+        protected void AssertPrints(params string[] expectedTexts)
+        {
+            Assert.AreEqual(expectedTexts.Length,
+                            this.Console.Writes.Count,
+                            $"Console write count");
+
+            for(int i = 0; i < expectedTexts.Length; i++)
+            {
+                Assert.AreEqual(expectedTexts[i],
+                                this.Console.Writes[i],
+                                $"Console text equality at entry {i}.");
+            } 
+        }
+
         protected void AssertRuntimeError(string source,
                                           TokenType op,
                                           string expectedError)

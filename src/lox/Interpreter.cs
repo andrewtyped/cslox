@@ -134,7 +134,8 @@ namespace lox
         public object? VisitVariableExpr(Expr.Variable expr,
                                          in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            return this.Environment.Get(source,
+                                        expr.name);
         }
 
         public object? VisitBinaryExpr(Expr.Binary expr,
