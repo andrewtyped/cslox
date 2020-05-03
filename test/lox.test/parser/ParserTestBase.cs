@@ -81,6 +81,21 @@ namespace lox.test.parser
             }
         }
 
+        protected T AssertStmt<T>(string source)
+            where T : Stmt
+        {
+            var scannedSource = this.Scan(source);
+            var stmts = this.parser.Parse(scannedSource);
+
+            Assert.AreEqual(1,
+                            stmts.Count,
+                            "Expected a single statement");
+            Assert.AreEqual(typeof(T),
+                            stmts[0]
+                                .GetType());
+            return (T)stmts[0];
+        }
+
         protected List<Stmt> AssertStmts(string source,
                                          params Type[] expectedSmtTypes)
         {

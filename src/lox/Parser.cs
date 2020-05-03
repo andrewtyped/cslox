@@ -5,6 +5,7 @@ using lox.constants;
 
 using static lox.constants.TokenType;
 using static lox.Expr;
+using static lox.Stmt;
 
 namespace lox
 {
@@ -27,21 +28,21 @@ namespace lox
                 this.current = 0;
                 this.parseErrors.Clear();
 
-                var statements = new List<Stmt>();
+                var declarations = new List<Stmt>();
 
                 while (!this.IsAtEnd(source))
                 {
-                    statements.Add(this.Statement(source));
+                    declarations.Add(this.Declaration(source));
                 }
 
-                return statements;
+                return declarations;
             }
             catch (ParseError parseError)
             {
                 this.parseErrors.Add(parseError);
                 return new List<Stmt>
                        {
-                           new Stmt.Expression(new Literal(null))
+                           new Expression(new Literal(null))
                        };
             }
         }
@@ -58,6 +59,30 @@ namespace lox
         #endregion
 
         #region GrammarRules
+
+        private Stmt Declaration(in ScannedSource source)
+        {
+            if(this.Match(source, VAR))
+            {
+                return this.VarDecl(source);
+            }
+
+            return this.Statement(source);
+        }
+
+        private Stmt VarDecl(in ScannedSource source)
+        {
+            var identifier = this.Consume(source,
+                                          IDENTIFIER,
+                                          "Expect identifier after 'var'.");
+
+            this.Consume(source,
+                         SEMICOLON,
+                         "Expect ';' after variable declaration.");
+
+            return new Var(identifier,
+                           null);
+        }
 
         private Stmt Statement(in ScannedSource source)
         {
@@ -76,7 +101,7 @@ namespace lox
             this.Consume(source,
                          SEMICOLON,
                          "Expect ';' after value");
-            return new Stmt.Print(value);
+            return new Print(value);
         }
 
         private Stmt ExpressionStatement(in ScannedSource source)
@@ -85,7 +110,7 @@ namespace lox
 
             if(this.Match(source, SEMICOLON))
             {
-                return new Stmt.Expression(expr);
+                return new Expression(expr);
             }
 
             //TODO: This is not quite right. I am attempting to support expression
@@ -94,7 +119,7 @@ namespace lox
             //without a semicolon.
             if (this.IsAtEnd(source))
             {
-                return new Stmt.Expression(expr);
+                return new Expression(expr);
             }
 
             throw this.Error(source,
