@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using lox.constants;
@@ -58,6 +59,14 @@ namespace lox.test.interpreter
             }
         }
 
+        protected void AssertVariable(string name, object? expectedValue)
+        {
+            var environment = this.Interpreter.Environment;
+            var value = environment.Get(name);
+            Assert.AreEqual(expectedValue,
+                            value);
+        }
+
         protected object? Interpret(string source)
         {
             return this.InterpretStmts(source)
@@ -81,6 +90,11 @@ namespace lox.test.interpreter
             var scannedTokens = scanner.ScanTokens(source);
             var stmts = parser.Parse(new ScannedSource(scannedTokens.ToArray(),
                                                        source));
+
+            if (parser.ParseErrors.Any())
+            {
+                throw new AggregateException(parser.ParseErrors);
+            }
 
             return stmts;
         }

@@ -33,6 +33,11 @@ namespace lox
 
         #region Instance Properties
 
+        internal Environment Environment
+        {
+            get;
+        } = new Environment();
+
         /// <summary>
         /// Gets the last error encountered while interpreting.
         /// </summary>
@@ -107,7 +112,19 @@ namespace lox
         public Void VisitVarStmt(Stmt.Var stmt,
                                  in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? value = null;
+
+            if(stmt.initializer != null)
+            {
+                value = this.Evaluate(stmt.initializer,
+                                      source);
+            }
+
+            this.Environment.Define(source,
+                                    stmt.name,
+                                    value);
+
+            return default;
         }
 
         #endregion
