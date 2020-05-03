@@ -45,13 +45,15 @@ namespace lox.test.parser
             return this.AssertExpr<T>((stmts.Single() as Stmt.Expression)!.expression);
         }
 
-        protected T AssertExpr<T>(Expr expr)
+        protected T AssertExpr<T>(Expr? expr)
             where T : Expr
         {
+            Assert.IsNotNull(expr);
+
             var expectedExpr = expr as T;
 
             Assert.IsNotNull(expectedExpr,
-                             $"Expected expr to be of type {typeof(T)} but was {expr.GetType()}");
+                             $"Expected expr to be of type {typeof(T)} but was {expr!.GetType()}");
 
             return expectedExpr!;
         }

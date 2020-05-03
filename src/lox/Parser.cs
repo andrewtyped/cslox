@@ -76,12 +76,19 @@ namespace lox
                                           IDENTIFIER,
                                           "Expect identifier after 'var'.");
 
+            Expr? initializer = null;
+
+            if(this.Match(source, EQUAL))
+            {
+                initializer = this.Expression(source);
+            }
+
             this.Consume(source,
                          SEMICOLON,
                          "Expect ';' after variable declaration.");
 
             return new Var(identifier,
-                           null);
+                           initializer);
         }
 
         private Stmt Statement(in ScannedSource source)

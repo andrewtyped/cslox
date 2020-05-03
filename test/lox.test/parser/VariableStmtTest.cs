@@ -22,6 +22,20 @@ namespace lox.test.parser
             Assert.IsNull(stmt.initializer);
         }
 
+        [TestMethod]
+        public void CanParseVariableStmtWithAssignment()
+        {
+            var source = @"var bar = 2 + 1;";
+
+            var stmt = this.AssertStmt<Var>(source);
+
+            Assert.AreEqual("bar",
+                            stmt.name.GetLexeme(source)
+                                .ToString());
+
+            var binaryExpr = this.AssertExpr<Expr.Binary>(stmt.initializer);
+        }
+
         #endregion
     }
 }
