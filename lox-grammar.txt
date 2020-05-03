@@ -38,6 +38,36 @@ bread     -> "toast" | "biscuits" | "English muffin" ;
 
 =========================================*/
 
+// Section 8.2.1 Variable syntax
+// =============================
+
+This section adds support for variables and IDENTIFIER primaries to
+the grammar.
+
+program -> (declaration* | expression) EOF ;
+
+declaration -> varDecl
+               | statement ;
+
+varDecl -> "var" IDENTIFIER ( "=" expression )? ";";
+
+statement -> exprStmt
+             | printStmt ;
+
+exprStmt -> expression ";" ;
+printStmt -> "print" expression ";";
+
+expression -> equality;
+equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication -> unary ( ( "/" | "*" ) unary )* ;
+unary -> ( "!" | "-" ) unary
+         | primary ;
+primary -> NUMBER | STRING | "false" | "true" | "nil"
+           | "(" expression ")" 
+           | IDENTIFIER;
+
 // Section 8.1 Statements
 // ======================
 
