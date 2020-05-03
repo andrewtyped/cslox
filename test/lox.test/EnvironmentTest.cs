@@ -91,6 +91,50 @@ namespace lox.test
                             value2);
         }
 
+        [TestMethod]
+        public void CanAssignVariable()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            this.environment.Define(source,
+                                    token,
+                                    null);
+
+            this.environment.Assign(source,
+                                    token,
+                                    "bar");
+
+            var value = this.environment.Get(source,
+                                             token);
+
+            Assert.AreEqual("bar",
+                            value);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeError))]
+        public void CannotAssignUndefinedVariable()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+           
+            this.environment.Assign(source,
+                                    token,
+                                    "bar");
+
+            var value = this.environment.Get(source,
+                                             token);
+
+            Assert.AreEqual("bar",
+                            value);
+        }
+
         #endregion
     }
 }

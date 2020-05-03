@@ -16,6 +16,23 @@ namespace lox
 
         #region Instance Methods
 
+        public void Assign(in ReadOnlySpan<char> source,
+                           Token token,
+                           object? value)
+        {
+            string lexeme = token.GetLexeme(source)
+                                 .ToString();
+
+            if (this.values.ContainsKey(lexeme))
+            {
+                this.values[lexeme] = value;
+                return;
+            }
+
+            throw new RuntimeError(token,
+                                   $"Undefined variable '{token.GetLexeme(source).ToString()}'");
+        }
+
         public void Define(in ReadOnlySpan<char> source,
                            Token token,
                            object? value)
