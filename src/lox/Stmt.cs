@@ -13,6 +13,7 @@ namespace lox
         {
             R VisitExpressionStmt(Expression stmt, in ReadOnlySpan<char> source);
             R VisitPrintStmt(Print stmt, in ReadOnlySpan<char> source);
+            R VisitVarStmt(Var stmt, in ReadOnlySpan<char> source);
         }
 
         public class Expression : Stmt
@@ -43,6 +44,25 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitPrintStmt(this, source);
+            }
+        }
+
+
+        public class Var : Stmt
+        {
+            public Var( Token name, Expr initializer )
+            {
+                this.name = name;
+                this.initializer = initializer;
+            }
+
+            public readonly Token name;
+
+            public readonly Expr initializer;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitVarStmt(this, source);
             }
         }
 

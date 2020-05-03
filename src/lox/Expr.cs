@@ -15,6 +15,7 @@ namespace lox
             R VisitGroupingExpr(Grouping expr, in ReadOnlySpan<char> source);
             R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
             R VisitUnaryExpr(Unary expr, in ReadOnlySpan<char> source);
+            R VisitVariableExpr(Variable expr, in ReadOnlySpan<char> source);
         }
 
         public class Binary : Expr
@@ -86,6 +87,22 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitUnaryExpr(this, source);
+            }
+        }
+
+
+        public class Variable : Expr
+        {
+            public Variable( Token name )
+            {
+                this.name = name;
+            }
+
+            public readonly Token name;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitVariableExpr(this, source);
             }
         }
 

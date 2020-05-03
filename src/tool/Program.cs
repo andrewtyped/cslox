@@ -24,7 +24,8 @@ namespace tool
                           "Binary   : Expr left, Token op, Expr right",
                           "Grouping : Expr expression",
                           "Literal  : object? value",
-                          "Unary    : Token op, Expr right"
+                          "Unary    : Token op, Expr right",
+                          "Variable : Token name"
                       });
 
             DefineAst(outputDir,
@@ -32,7 +33,8 @@ namespace tool
                       new List<string>
                       {
                           "Expression : Expr expression",
-                          "Print      : Expr expression"
+                          "Print      : Expr expression",
+                          "Var        : Token name, Expr initializer"
                       });
 
             return 0;

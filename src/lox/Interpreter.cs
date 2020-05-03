@@ -104,9 +104,21 @@ namespace lox
             return default;
         }
 
+        public Void VisitVarStmt(Stmt.Var stmt,
+                                 in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Expression visitors
+
+        public object? VisitVariableExpr(Expr.Variable expr,
+                                         in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
 
         public object? VisitBinaryExpr(Expr.Binary expr,
                                        in ReadOnlySpan<char> source)

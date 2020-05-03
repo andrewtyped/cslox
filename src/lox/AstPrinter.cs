@@ -51,9 +51,20 @@ namespace lox
             throw new NotImplementedException();
         }
 
+        public string VisitVarStmt(Stmt.Var stmt, in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Expression visitors
+
+        public string VisitVariableExpr(Expr.Variable expr,
+                                        in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
 
         public string VisitBinaryExpr(Expr.Binary expr,
                                       in ReadOnlySpan<char> source)
