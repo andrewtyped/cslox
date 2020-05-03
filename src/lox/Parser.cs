@@ -125,7 +125,7 @@ namespace lox
             //without a semicolon.
             if (this.IsAtEnd(source))
             {
-                return new Expression(expr);
+                return new Print(expr);
             }
 
             throw this.Error(source,

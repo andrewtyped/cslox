@@ -19,8 +19,8 @@ namespace lox.test.parser
             this.astPrinter = new AstPrinter();
         }
 
-        protected void AssertAst(string source,
-                                 string expectedAst)
+        protected virtual void AssertAst(string source,
+                                         string expectedAst)
         {
             var scannedSource = this.Scan(source);
             var stmts = this.parser.Parse(scannedSource);
@@ -42,7 +42,13 @@ namespace lox.test.parser
             where T : Expr
         {
             var stmts = this.parser.Parse(source);
-            return this.AssertExpr<T>((stmts.Single() as Stmt.Expression)!.expression);
+
+            return stmts.Single() switch
+            {
+                Stmt.Expression expr => this.AssertExpr<T>(expr.expression),
+                Stmt.Print print => this.AssertExpr<T>(print.expression),
+                _ => throw new InvalidOperationException($"Unrecognized stmt type ")
+            };
         }
 
         protected T AssertExpr<T>(Expr? expr)

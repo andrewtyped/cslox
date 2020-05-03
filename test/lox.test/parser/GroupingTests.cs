@@ -28,6 +28,13 @@ namespace lox.test.parser
                            expectedAst);
         }
 
+        protected override void AssertAst(string source, string expectedAst)
+        {
+            //Expression statements with no semicolon are parsed as print statements so
+            //simple REPL statements don't need semicolons.
+            base.AssertAst(source, $"(print {expectedAst})");
+        }
+
         #endregion
     }
 }

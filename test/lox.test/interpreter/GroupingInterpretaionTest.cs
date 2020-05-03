@@ -3,21 +3,24 @@
 namespace lox.test.interpreter
 {
     [TestClass]
-    public class GroupingInterpretaionTest : InterpreterTestBase 
+    public class GroupingInterpretaionTest : InterpreterTestBase
     {
+        #region Instance Methods
+
         [DataTestMethod]
         [DataRow("(1)",
-                 1d)]
+                 "1")]
         [DataRow("((42))",
-                 42d)]
+                 "42")]
         [DataRow("((((((((100))))))))",
-                 100d)]
+                 "100")]
         public void CanInterpretGroupedLiteralExpressions(string source,
-                                                          object expectedValue)
+                                                          string expectedValue)
         {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
+
+        #endregion
     }
 }

@@ -8,14 +8,17 @@ namespace lox.test.interpreter
         #region Instance Methods
 
         [DataTestMethod]
-        [DataRow("\"Test\"", "Test")]
-        [DataRow("1", 1d)]
-        [DataRow("nil", null)]
-        public void CanInterpretLiterals(string source, object expectedValue)
+        [DataRow("\"Test\"",
+                 "Test")]
+        [DataRow("1",
+                 "1")]
+        [DataRow("nil",
+                 "nil")]
+        public void CanInterpretLiterals(string source,
+                                         string expectedValue)
         {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         #endregion

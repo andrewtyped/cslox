@@ -8,104 +8,104 @@ namespace lox.test.interpreter
     public class BinaryInterpretationTest : InterpreterTestBase
     {
         [DataTestMethod]
-        [DataRow("3 * 4", 12d)]
-        [DataRow("9 / 6", 1.5d)]
-        [DataRow("10 - 3", 7d)]
-        [DataRow("23 + 51", 74d)]
-        [DataRow("1 + 2 + 5.5", 8.5d)]
-        [DataRow("2 + 2 * 4", 10d)]
-        [DataRow("1 + 2 / 4 + 1", 2.5d)]
-        [DataRow("(1 + 2) / (4 + 1)", 0.6d)]
-        [DataRow("1 + nil", null)]
-        [DataRow("nil + 1", null)]
-        [DataRow("nil + nil", null)]
+        [DataRow("3 * 4", "12")]
+        [DataRow("9 / 6", "1.5")]
+        [DataRow("10 - 3", "7")]
+        [DataRow("23 + 51", "74")]
+        [DataRow("1 + 2 + 5.5", "8.5")]
+        [DataRow("2 + 2 * 4", "10")]
+        [DataRow("1 + 2 / 4 + 1", "2.5")]
+        [DataRow("(1 + 2) / (4 + 1)", "0.6")]
+        [DataRow("1 + nil", "nil")]
+        [DataRow("nil + 1", "nil")]
+        [DataRow("nil + nil", "nil")]
         public void CanInterpretArithmeticExpressions(string source,
-                                                      object expectedValue)
+                                                      string expectedPrint)
         {
-            this.AssertExpression(source,
-                                  expectedValue);
+            this.Interpret(source);
+            this.AssertPrints(expectedPrint);
         }
 
         [DataTestMethod]
         [DataRow("\"Hello\" + \" world\"",
                  "Hello world")]
         [DataRow("nil + \" world\"",
-                 null)]
+                 "nil")]
         [DataRow("\"Hello\" + nil",
-                 null)]
+                 "nil")]
         public void CanInterpretStringConcatenationExpressions(string source,
-                                                               object expectedValue)
+                                                               string expectedValue)
         {
-            this.AssertExpression(source,
-                                  expectedValue);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         [DataTestMethod]
         [DataRow("1 > 2",
-                 false)]
+                 "False")]
         [DataRow("4 > 3",
-                 true)]
+                 "True")]
         [DataRow("4 > 4",
-                 false)]
+                 "False")]
         [DataRow("1 < 2",
-                 true)]
+                 "True")]
         [DataRow("4 < 3",
-                 false)]
+                 "False")]
         [DataRow("4 < 4",
-                 false)]
+                 "False")]
         [DataRow("1 >= 2",
-                 false)]
+                 "False")]
         [DataRow("4 >= 3",
-                 true)]
+                 "True")]
         [DataRow("4 >= 4",
-                 true)]
+                 "True")]
         [DataRow("1 <= 2",
-                 true)]
+                 "True")]
         [DataRow("4 <= 3",
-                 false)]
+                 "False")]
         [DataRow("4 <= 4",
-                 true)]
-        [DataRow("nil > 1", false)]
-        [DataRow("nil < 1", false)]
-        [DataRow("nil >= 1", false)]
-        [DataRow("nil <= 1", false)]
-        [DataRow("1 > nil", false)]
-        [DataRow("1 < nil", false)]
-        [DataRow("1 >= nil", false)]
-        [DataRow("1 <= nil", false)]
-        [DataRow("nil > nil", false)]
-        [DataRow("nil < nil", false)]
-        [DataRow("nil >= nil", false)]
-        [DataRow("nil <= nil", false)]
+                 "True")]
+        [DataRow("nil > 1", "False")]
+        [DataRow("nil < 1", "False")]
+        [DataRow("nil >= 1", "False")]
+        [DataRow("nil <= 1", "False")]
+        [DataRow("1 > nil", "False")]
+        [DataRow("1 < nil", "False")]
+        [DataRow("1 >= nil", "False")]
+        [DataRow("1 <= nil", "False")]
+        [DataRow("nil > nil", "False")]
+        [DataRow("nil < nil", "False")]
+        [DataRow("nil >= nil", "False")]
+        [DataRow("nil <= nil", "False")]
         public void CanInterpretComparisonExpressions(string source,
-                                                      object expectedValue)
+                                                      string expectedValue)
         {
-            this.AssertExpression(source,
-                                  expectedValue);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         [DataTestMethod]
-        [DataRow("1 == 1", true)]
-        [DataRow("1 == 2", false)]
-        [DataRow("1 == \"1\"", false)]
-        [DataRow("1 == true", false)]
-        [DataRow("1 == false", false)]
-        [DataRow("1 == nil", false)]
-        [DataRow("nil == 1", false)]
-        [DataRow("1 != 1", false)]
-        [DataRow("1 != 2", true)]
-        [DataRow("1 != \"1\"", true)]
-        [DataRow("1 != true", true)]
-        [DataRow("1 != true", true)]
-        [DataRow("1 != nil", true)]
-        [DataRow("nil != 1", true)]
-        [DataRow("nil == nil", true)]
-        [DataRow("nil != nil", false)]
+        [DataRow("1 == 1", "True")]
+        [DataRow("1 == 2", "False")]
+        [DataRow("1 == \"1\"", "False")]
+        [DataRow("1 == true", "False")]
+        [DataRow("1 == false", "False")]
+        [DataRow("1 == nil", "False")]
+        [DataRow("nil == 1", "False")]
+        [DataRow("1 != 1", "False")]
+        [DataRow("1 != 2", "True")]
+        [DataRow("1 != \"1\"", "True")]
+        [DataRow("1 != true", "True")]
+        [DataRow("1 != true", "True")]
+        [DataRow("1 != nil", "True")]
+        [DataRow("nil != 1", "True")]
+        [DataRow("nil == nil", "True")]
+        [DataRow("nil != nil", "False")]
         public void CanInterpretEqualityExpressions(string source,
-                                                    object expectedValue)
+                                                    string expectedValue)
         {
-            this.AssertExpression(source,
-                                  expectedValue);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         [DataTestMethod]

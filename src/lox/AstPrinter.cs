@@ -48,7 +48,9 @@ namespace lox
         public string VisitPrintStmt(Stmt.Print stmt,
                                      in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            return this.Parenthesize("print",
+                                     source,
+                                     stmt.expression);
         }
 
         public string VisitVarStmt(Stmt.Var stmt, in ReadOnlySpan<char> source)

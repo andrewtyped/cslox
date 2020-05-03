@@ -8,30 +8,28 @@ namespace lox.test.interpreter
     public class UnaryInterpretationTest : InterpreterTestBase
     {
         [DataTestMethod]
-        [DataRow("-42", -42d)]
-        [DataRow("!true", false)]
-        [DataRow("!false", true)]
-        [DataRow("!42", false)]
-        [DataRow("!\"A string\"", false)]
-        [DataRow("!nil", true)]
+        [DataRow("-42", "-42")]
+        [DataRow("!true", "False")]
+        [DataRow("!false", "True")]
+        [DataRow("!42", "False")]
+        [DataRow("!\"A string\"", "False")]
+        [DataRow("!nil", "True")]
         public void CanInterpretUnaryExpressionsAppliedToLiterals(string source,
-                                                                  object expectedValue)
+                                                                  string expectedValue)
         {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         [DataTestMethod]
-        [DataRow("-(((30)))", -30d)]
-        [DataRow("!(true)", false)]
-        [DataRow("!((false))", true)]
+        [DataRow("-(((30)))", "-30")]
+        [DataRow("!(true)", "False")]
+        [DataRow("!((false))", "True")]
         public void CanInterpretUnaryExpressionsAppliedToGroups(string source,
-                                                                object expectedValue)
+                                                                string expectedValue)
         {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
+            this.Interpret(source);
+            this.AssertPrints(expectedValue);
         }
 
         [DataTestMethod]
