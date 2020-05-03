@@ -50,7 +50,7 @@ namespace lox
 
         public class Var : Stmt
         {
-            public Var( Token name, Expr initializer )
+            public Var( Token name, Expr? initializer )
             {
                 this.name = name;
                 this.initializer = initializer;
@@ -58,7 +58,7 @@ namespace lox
 
             public readonly Token name;
 
-            public readonly Expr initializer;
+            public readonly Expr? initializer;
 
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {

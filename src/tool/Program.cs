@@ -34,7 +34,7 @@ namespace tool
                       {
                           "Expression : Expr expression",
                           "Print      : Expr expression",
-                          "Var        : Token name, Expr initializer"
+                          "Var        : Token name, Expr? initializer"
                       });
 
             return 0;
