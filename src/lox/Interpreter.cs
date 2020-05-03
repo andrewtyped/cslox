@@ -47,15 +47,6 @@ namespace lox
             private set;
         }
 
-        /// <summary>
-        /// Gets the values evaluated by the interpreter.
-        /// </summary>
-        public List<object?> Values
-        {
-            get;
-            private set;
-        } = new List<object?>();
-
         #endregion
 
         #region Instance Methods
@@ -66,8 +57,7 @@ namespace lox
             try
             {
                 this.LastError = null;
-                this.Values.Clear();
-
+                
                 for (int i = 0;
                      i < stmts.Count;
                      i++)
@@ -93,8 +83,6 @@ namespace lox
         {
             var value = this.Evaluate(stmt.expression,
                                       source);
-
-            this.Values.Add(value);
 
             return default;
         }

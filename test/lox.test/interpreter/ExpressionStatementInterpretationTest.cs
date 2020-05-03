@@ -15,16 +15,8 @@ namespace lox.test.interpreter
 ""string"";
 true == true;";
 
-            var values = this.InterpretStmts(source);
-
-            Assert.AreEqual(3,
-                            values.Count);
-            Assert.AreEqual(2d,
-                            values[0]);
-            Assert.AreEqual("string",
-                            values[1]);
-            Assert.AreEqual(true,
-                            values[2]);
+            this.Interpret(source);
+            this.AssertPrints();
         }
 
         #endregion

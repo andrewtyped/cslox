@@ -16,14 +16,10 @@ namespace lox.test.interpreter
 print ""hello"";
 print ""world"";";
 
-            var values = this.InterpretStmts(source);
+            this.Interpret(source);
 
-            Assert.AreEqual(0,
-                            values.Count);
-            Assert.AreEqual("hello",
-                            this.Console.Writes[0]);
-            Assert.AreEqual("world",
-                            this.Console.Writes[1]);
+            this.AssertPrints("hello",
+                              "world");
         }
 
         #endregion

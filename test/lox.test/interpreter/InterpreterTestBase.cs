@@ -27,15 +27,7 @@ namespace lox.test.interpreter
         }
 
         #region Instance Methods
-
-        protected void AssertExpression(string source,
-                                        object expectedValue)
-        {
-            var value = this.Interpret(source);
-            Assert.AreEqual(expectedValue,
-                            value);
-        }
-
+        
         protected void AssertPrints(params string[] expectedTexts)
         {
             Assert.AreEqual(expectedTexts.Length,
@@ -56,7 +48,7 @@ namespace lox.test.interpreter
         {
             try
             {
-                var value = this.Interpret(source);
+                this.Interpret(source);
 
                 Assert.IsNotNull(this.Interpreter.LastError,
                                  $"Expected source '{source}' to cause runtime error");
@@ -81,19 +73,16 @@ namespace lox.test.interpreter
                             value);
         }
 
-        protected object? Interpret(string source)
+        protected void Interpret(string source)
         {
-            return this.InterpretStmts(source)
-                       .FirstOrDefault();
+            this.InterpretStmts(source);
         }
 
-        protected List<object?> InterpretStmts(string source)
+        protected void InterpretStmts(string source)
         {
             var stmts = this.Parse(source);
             this.Interpreter.Interpret(stmts,
                                        source);
-
-            return this.Interpreter.Values;
         }
 
         protected List<Stmt> Parse(string source)
