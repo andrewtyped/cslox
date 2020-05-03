@@ -36,6 +36,16 @@ namespace lox.test.parser
             var binaryExpr = this.AssertExpr<Expr.Binary>(stmt.initializer);
         }
 
+        [DataTestMethod]
+        [DataRow("var;","Expect identifier")]
+        [DataRow("var = foo;","Expect identifier")]
+        [DataRow("var foo =;","Expect expression")]
+        public void CanDetectInvalidVariableDeclarations(string source, string containsErrors)
+        {
+            this.AssertParseErrors2(source,
+                                    containsErrors);
+        }
+
         #endregion
     }
 }
