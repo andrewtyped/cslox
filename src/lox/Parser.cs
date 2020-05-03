@@ -23,28 +23,17 @@ namespace lox
 
         public List<Stmt> Parse(in ScannedSource source)
         {
-            try
+            this.current = 0;
+            this.parseErrors.Clear();
+
+            var declarations = new List<Stmt>();
+
+            while (!this.IsAtEnd(source))
             {
-                this.current = 0;
-                this.parseErrors.Clear();
-
-                var declarations = new List<Stmt>();
-
-                while (!this.IsAtEnd(source))
-                {
-                    declarations.Add(this.Declaration(source));
-                }
-
-                return declarations;
+                declarations.Add(this.Declaration(source));
             }
-            catch (ParseError parseError)
-            {
-                this.parseErrors.Add(parseError);
-                return new List<Stmt>
-                       {
-                           new Expression(new Literal(null))
-                       };
-            }
+
+            return declarations;
         }
 
         #endregion
@@ -62,12 +51,22 @@ namespace lox
 
         private Stmt Declaration(in ScannedSource source)
         {
-            if(this.Match(source, VAR))
+            try
             {
-                return this.VarDecl(source);
-            }
+                if (this.Match(source,
+                               VAR))
+                {
+                    return this.VarDecl(source);
+                }
 
-            return this.Statement(source);
+                return this.Statement(source);
+            }
+            catch (ParseError parseError)
+            {
+                this.Synchronize(source);
+                this.parseErrors.Add(parseError);
+                return new Expression(new Literal(null));
+            }
         }
 
         private Stmt VarDecl(in ScannedSource source)
