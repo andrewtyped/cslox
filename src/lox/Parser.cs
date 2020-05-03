@@ -251,6 +251,11 @@ namespace lox
                                        .Literal);
             }
 
+            if(this.Match(source, IDENTIFIER))
+            {
+                return new Variable(this.Previous(source));
+            }
+
             if (this.Match(source,
                            LEFT_PAREN))
             {

@@ -48,10 +48,20 @@ namespace lox.test.parser
         }
 
         [TestMethod]
+        public void CanParseVariableExpression()
+        {
+            var source = "foo;";
+            var identifierExpr = this.AssertExpr<Variable>(source);
+            Assert.AreEqual("foo",
+                            identifierExpr.name.GetLexeme(source)
+                                          .ToString());
+        }
+
+        [TestMethod]
         public void ThrowsParseErrorIfNoValidExpressionDetected()
         {
 
-            var source = "This is not valid lox";
+            var source = ";";
             var scannedSource = this.Scan(source);
             var expr = this.parser.Parse(scannedSource);
             this.AssertParseErrors("Expect expression");
