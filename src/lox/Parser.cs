@@ -64,7 +64,6 @@ namespace lox
             catch (ParseError parseError)
             {
                 this.Synchronize(source);
-                this.parseErrors.Add(parseError);
                 return new Expression(new Literal(null));
             }
         }
@@ -133,7 +132,31 @@ namespace lox
                              "Expect ';' after expression.");
         }
 
-        private Expr Expression(in ScannedSource source) => this.Equality(source);
+        private Expr Expression(in ScannedSource source) => this.Assignment(source);
+
+        private Expr Assignment(in ScannedSource source)
+        {
+            Expr expr = this.Equality(source);
+
+            if(this.Match(source, EQUAL))
+            {
+                Token equals = this.Previous(source);
+                Expr value = this.Assignment(source);
+
+                if(expr is Variable variable)
+                {
+                    Token name = variable.name;
+                    return new Assign(name,
+                                      value);
+                }
+
+                this.Error(source,
+                           equals,
+                           "Invalid assignment target.");
+            }
+
+            return expr;
+        }
 
         private Expr Equality(in ScannedSource source)
         {
@@ -359,7 +382,9 @@ namespace lox
             Lox.Error(source,
                       token,
                       message);
-            return new ParseError(message);
+            ParseError parseError = new ParseError(message);
+            this.parseErrors.Add(parseError);
+            return parseError;
         }
 
         /// <summary>
