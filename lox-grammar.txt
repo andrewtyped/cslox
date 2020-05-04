@@ -70,6 +70,38 @@ primary -> NUMBER | STRING | "false" | "true" | "nil"
            | "(" expression ")" 
            | IDENTIFIER;
 
+// Section 8.5.2 Block syntax and semantics
+// ========================================
+
+This section adds support for lexically scoped blocks (statements enclosed by "{" and "}"").
+
+program -> (declaration* | expression) EOF ;
+
+declaration -> varDecl
+               | statement ;
+
+varDecl -> "var" IDENTIFIER ( "=" expression )? ";";
+
+statement -> exprStmt
+             | printStmt 
+             | block;
+
+exprStmt -> expression ";" ;
+printStmt -> "print" expression ";";
+block -> "{" declaration* "}" ;
+
+expression -> equality;
+equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication -> unary ( ( "/" | "*" ) unary )* ;
+unary -> ( "!" | "-" ) unary
+         | primary ;
+primary -> NUMBER | STRING | "false" | "true" | "nil"
+           | "(" expression ")" 
+           | IDENTIFIER;
+
+
 // Section 8.2.1 Variable syntax
 // =============================
 
