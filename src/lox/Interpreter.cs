@@ -129,7 +129,13 @@ namespace lox
         public object? VisitAssignExpr(Expr.Assign expr,
                                        in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? value = this.Evaluate(expr.value,
+                                          source);
+
+            this.Environment.Assign(source,
+                                    expr.name,
+                                    value);
+            return value;
         }
 
         public object? VisitBinaryExpr(Expr.Binary expr,
