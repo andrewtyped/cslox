@@ -11,10 +11,27 @@ namespace lox
     {
         public interface IVisitor<R>
         {
+            R VisitBlockStmt(Block stmt, in ReadOnlySpan<char> source);
             R VisitExpressionStmt(Expression stmt, in ReadOnlySpan<char> source);
             R VisitPrintStmt(Print stmt, in ReadOnlySpan<char> source);
             R VisitVarStmt(Var stmt, in ReadOnlySpan<char> source);
         }
+
+        public class Block : Stmt
+        {
+            public Block( List<Stmt> statements )
+            {
+                this.statements = statements;
+            }
+
+            public readonly List<Stmt> statements;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitBlockStmt(this, source);
+            }
+        }
+
 
         public class Expression : Stmt
         {

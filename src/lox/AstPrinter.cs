@@ -38,6 +38,14 @@ namespace lox
 
         #region Statement visitors
 
+        public string VisitBlockStmt(Stmt.Block stmt,
+                                     in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize("block",
+                                     source,
+                                     stmt.statements.ToArray());
+        }
+
         public string VisitExpressionStmt(Stmt.Expression stmt,
                                           in ReadOnlySpan<char> source)
         {
@@ -124,6 +132,30 @@ namespace lox
                   .Append(exprs[i]
                               .Accept(this,
                                       source));
+            }
+
+            sb.Append(')');
+            return sb.ToString();
+        }
+
+        private string Parenthesize(in ReadOnlySpan<char> name,
+                                    in ReadOnlySpan<char> source,
+                                    params Stmt[] stmts)
+        {
+            var sb = new StringBuilder();
+
+            sb.Append('(')
+              .Append(name);
+
+            for (int i = 0;
+                 i < stmts.Length;
+                 i++)
+            {
+                sb.Append(' ')
+                  .Append(stmts[i]
+                              .Accept(this,
+                                      source))
+                  .AppendLine(";");
             }
 
             sb.Append(')');

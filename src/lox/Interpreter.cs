@@ -78,6 +78,12 @@ namespace lox
 
         #region Statement visitors
 
+        public Void VisitBlockStmt(Stmt.Block stmt,
+                                        in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public Void VisitExpressionStmt(Stmt.Expression stmt,
                                         in ReadOnlySpan<char> source)
         {
