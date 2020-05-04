@@ -12,6 +12,21 @@ namespace lox
 
         private readonly Dictionary<string, object?> values = new Dictionary<string, object?>();
 
+        private Environment? parentEnvironment;
+
+        #endregion
+
+        #region Constructors
+
+        public Environment()
+        {
+        }
+
+        public Environment(Environment parentEnvironment)
+        {
+            this.parentEnvironment = parentEnvironment ?? throw new ArgumentNullException(nameof(parentEnvironment));
+        }
+
         #endregion
 
         #region Instance Methods
@@ -26,6 +41,15 @@ namespace lox
             if (this.values.ContainsKey(lexeme))
             {
                 this.values[lexeme] = value;
+                return;
+            }
+
+            if (!(this.parentEnvironment is null))
+            {
+                this.parentEnvironment.Assign(source,
+                                              token,
+                                              value);
+
                 return;
             }
 
@@ -49,6 +73,12 @@ namespace lox
                                         out object? value))
             {
                 return value;
+            }
+
+            if(!(this.parentEnvironment is null))
+            {
+                return this.parentEnvironment.Get(source,
+                                                  token);
             }
 
             throw new RuntimeError(token,

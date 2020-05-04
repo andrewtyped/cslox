@@ -135,6 +135,144 @@ namespace lox.test
                             value);
         }
 
+        [TestMethod]
+        public void CanAccessVariablesInEnclosedScopes()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+            parentEnvironment.Define(source,
+                                     token,
+                                     1d);
+
+            var childEnvironment = new Environment(parentEnvironment);
+
+            var value = childEnvironment.Get(source,
+                                             token);
+
+            Assert.AreEqual(1d,
+                            value);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeError))]
+        public void CannotAccessVariablesDefinedInChildScopeFromParentScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            var childEnvironment = new Environment(parentEnvironment);
+
+            childEnvironment.Define(source,
+                                    token,
+                                    1d);
+
+            parentEnvironment.Get(source,
+                                  token);
+        }
+
+        [TestMethod]
+        public void VariablesDefinedInChildScopeCanShadowVariablesDefinedInParentScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            parentEnvironment.Define(source,
+                                     token,
+                                     1d);
+
+            var childEnvironment = new Environment(parentEnvironment);
+
+            childEnvironment.Define(source,
+                                    token,
+                                    2d);
+
+            var value = parentEnvironment.Get(source,
+                                              token);
+
+            Assert.AreEqual(1d,
+                            value);
+
+            value = childEnvironment.Get(source,
+                                         token);
+
+            Assert.AreEqual(2d,
+                            value);
+        }
+
+        [TestMethod]
+        public void CanAssignVariableDefinedInParentScopeFromChildScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            parentEnvironment.Define(source,
+                                     token,
+                                     null);
+
+            var childEnvironment = new Environment(parentEnvironment);
+
+            childEnvironment.Assign(source,
+                                    token,
+                                    2d);
+
+            var value = childEnvironment.Get(source,
+                                             token);
+            Assert.AreEqual(2d,
+                            value);
+        }
+
+        [TestMethod]
+        public void AssignmentsToShadowedVariablesDoNotAffectParentScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            parentEnvironment.Define(source,
+                                     token,
+                                     1d);
+
+            var childEnvironment = new Environment(parentEnvironment);
+
+            childEnvironment.Define(source,
+                                    token,
+                                    2d);
+
+            childEnvironment.Assign(source,
+                                    token,
+                                    3d);
+
+            var value = parentEnvironment.Get(source,
+                                              token);
+
+            Assert.AreEqual(1d,
+                            value);
+
+            value = childEnvironment.Get(source,
+                                         token);
+
+            Assert.AreEqual(3d,
+                            value);
+        }
         #endregion
     }
 }
