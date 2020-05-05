@@ -61,7 +61,7 @@ namespace lox
 
                 return this.Statement(source);
             }
-            catch (ParseError parseError)
+            catch (ParseError)
             {
                 this.Synchronize(source);
                 return new Expression(new Literal(null));
@@ -97,6 +97,12 @@ namespace lox
                 return this.PrintStatement(source);
             }
 
+            if (this.Match(source,
+                           LEFT_BRACE))
+            {
+                return this.BlockStatement(source);
+            }
+
             return this.ExpressionStatement(source);
         }
 
@@ -107,6 +113,24 @@ namespace lox
                          SEMICOLON,
                          "Expect ';' after value");
             return new Print(value);
+        }
+
+        private Stmt BlockStatement(in ScannedSource source)
+        {
+            var statements = new List<Stmt>();
+
+            while (!this.Check(source,
+                               RIGHT_BRACE)
+                   && !this.IsAtEnd(source))
+            {
+                statements.Add(this.Declaration(source));
+            }
+
+            this.Consume(source,
+                         RIGHT_BRACE,
+                         "Expect '}' at end of block.");
+                 
+            return new Block(statements);
         }
 
         private Stmt ExpressionStatement(in ScannedSource source)
