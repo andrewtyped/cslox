@@ -36,6 +36,7 @@ namespace lox
         internal Environment Environment
         {
             get;
+            private set;
         } = new Environment();
 
         /// <summary>
@@ -81,7 +82,35 @@ namespace lox
         public Void VisitBlockStmt(Stmt.Block stmt,
                                         in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.ExecuteBlock(stmt.statements,
+                              new Environment(this.Environment),
+                              source);
+
+            return default;
+        }
+
+        private void ExecuteBlock(List<Stmt> stmts,
+                                  Environment environment,
+                                  in ReadOnlySpan<char> source)
+        {
+            var previousEnvironment = this.Environment;
+            try
+            {
+                this.Environment = environment;
+
+                for (int i = 0;
+                     i < stmts.Count;
+                     i++)
+                {
+                    stmts[i]
+                        .Accept(this,
+                                source);
+                }
+            }
+            finally
+            {
+                this.Environment = previousEnvironment;
+            }
         }
 
         public Void VisitExpressionStmt(Stmt.Expression stmt,
