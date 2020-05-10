@@ -13,6 +13,7 @@ namespace lox
         {
             R VisitBlockStmt(Block stmt, in ReadOnlySpan<char> source);
             R VisitExpressionStmt(Expression stmt, in ReadOnlySpan<char> source);
+            R VisitIfStmt(If stmt, in ReadOnlySpan<char> source);
             R VisitPrintStmt(Print stmt, in ReadOnlySpan<char> source);
             R VisitVarStmt(Var stmt, in ReadOnlySpan<char> source);
         }
@@ -45,6 +46,28 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitExpressionStmt(this, source);
+            }
+        }
+
+
+        public class If : Stmt
+        {
+            public If( Expr condition, Stmt thenBranch, Stmt? elseBranch )
+            {
+                this.condition = condition;
+                this.thenBranch = thenBranch;
+                this.elseBranch = elseBranch;
+            }
+
+            public readonly Expr condition;
+
+            public readonly Stmt thenBranch;
+
+            public readonly Stmt? elseBranch;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitIfStmt(this, source);
             }
         }
 
