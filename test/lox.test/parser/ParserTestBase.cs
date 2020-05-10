@@ -104,6 +104,15 @@ namespace lox.test.parser
             return (T)stmts[0];
         }
 
+        protected T AssertStmt<T>(Stmt statement)
+            where T : Stmt
+        {
+            Assert.AreEqual(typeof(T),
+                            statement
+                                .GetType());
+            return (T)statement;
+        }
+
         protected List<Stmt> AssertStmts(string source,
                                          params Type[] expectedSmtTypes)
         {

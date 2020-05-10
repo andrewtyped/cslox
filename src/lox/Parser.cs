@@ -91,6 +91,11 @@ namespace lox
 
         private Stmt Statement(in ScannedSource source)
         {
+            if (this.Match(source, IF))
+            {
+                return this.IfStatement(source);
+            }
+
             if (this.Match(source,
                            PRINT))
             {
@@ -104,6 +109,32 @@ namespace lox
             }
 
             return this.ExpressionStatement(source);
+        }
+
+        private Stmt IfStatement(in ScannedSource source)
+        {
+            this.Consume(source,
+                         LEFT_PAREN,
+                         "Expect '(' after if statement.");
+
+            Expr condition = this.Expression(source);
+
+            this.Consume(source,
+                         RIGHT_PAREN,
+                         "Expect ')' after if condition.");
+            Stmt thenStatement = this.Statement(source);
+
+            Stmt? elseStatement = null;
+
+            if (this.Match(source,
+                           ELSE))
+            {
+                elseStatement = this.Statement(source);
+            }
+
+            return new If(condition,
+                          thenStatement,
+                          elseStatement);
         }
 
         private Stmt PrintStatement(in ScannedSource source)
