@@ -38,6 +38,41 @@ bread     -> "toast" | "biscuits" | "English muffin" ;
 
 =========================================*/
 
+// Section 9.2 Conditional
+// =======================
+
+This section adds support for if statements
+
+program -> (declaration* | expression) EOF ;
+
+declaration -> varDecl
+               | statement ;
+
+varDecl -> "var" IDENTIFIER ( "=" expression )? ";";
+
+statement -> exprStmt
+             | ifStmt
+             | printStmt 
+             | block;
+
+exprStmt -> expression ";" ;
+ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ; 
+printStmt -> "print" expression ";";
+block -> "{" declaration* "}" ;
+
+expression -> assignment ;
+assignment -> IDENTIFIER "=" assignment
+              | equality ;
+equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication -> unary ( ( "/" | "*" ) unary )* ;
+unary -> ( "!" | "-" ) unary
+         | primary ;
+primary -> NUMBER | STRING | "false" | "true" | "nil"
+           | "(" expression ")" 
+           | IDENTIFIER;
+
 // Section 8.4.1 Assignment syntax
 // ===============================
 
