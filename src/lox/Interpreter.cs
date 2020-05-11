@@ -81,7 +81,22 @@ namespace lox
 
         public Void VisitIfStmt(Stmt.If stmt, in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? condition = this.Evaluate(stmt.condition,
+                                              source);
+
+            if (this.IsTruthy(condition,
+                              source))
+            {
+                return stmt.thenBranch.Accept(this,
+                                              source);
+            }
+            else if(stmt.elseBranch != null)
+            {
+                return stmt.elseBranch.Accept(this,
+                                              source);
+            }
+
+            return default;
         }
 
         public Void VisitBlockStmt(Stmt.Block stmt,
