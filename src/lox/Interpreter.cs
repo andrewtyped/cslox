@@ -283,6 +283,11 @@ namespace lox
             return expr.value;
         }
 
+        public object VisitLogicalExpr(Expr.Logical expr, in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitUnaryExpr(Expr.Unary expr,
                                       in ReadOnlySpan<char> source)
         {

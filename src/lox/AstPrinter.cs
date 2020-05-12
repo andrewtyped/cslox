@@ -113,6 +113,15 @@ namespace lox
             return expr.value?.ToString() ?? "nil";
         }
 
+        public string VisitLogicalExpr(Expr.Logical expr,
+                                       in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize(expr.op.GetLexeme(source),
+                                     source,
+                                     expr.left,
+                                     expr.right);
+        }
+
         public string VisitUnaryExpr(Expr.Unary expr,
                                      in ReadOnlySpan<char> source)
         {
