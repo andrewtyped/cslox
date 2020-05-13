@@ -191,7 +191,7 @@ namespace lox
 
         private Expr Assignment(in ScannedSource source)
         {
-            Expr expr = this.Equality(source);
+            Expr expr = this.LogicOr(source);
 
             if(this.Match(source, EQUAL))
             {
@@ -208,6 +208,40 @@ namespace lox
                 this.Error(source,
                            equals,
                            "Invalid assignment target.");
+            }
+
+            return expr;
+        }
+
+        private Expr LogicOr(in ScannedSource source)
+        {
+            Expr expr = this.LogicAnd(source);
+
+            while (this.Match(source,
+                              OR))
+            {
+                Token op = this.Previous(source);
+                Expr right = this.LogicAnd(source);
+                expr = new Logical(expr,
+                                   op,
+                                   right);
+            }
+
+            return expr;
+        }
+
+        private Expr LogicAnd(in ScannedSource source)
+        {
+            Expr expr = this.Equality(source);
+
+            while (this.Match(source,
+                              AND))
+            {
+                Token op = this.Previous(source);
+                Expr right = this.Equality(source);
+                expr = new Logical(expr,
+                                   op,
+                                   right);
             }
 
             return expr;
