@@ -283,9 +283,29 @@ namespace lox
             return expr.value;
         }
 
-        public object VisitLogicalExpr(Expr.Logical expr, in ReadOnlySpan<char> source)
+        public object? VisitLogicalExpr(Expr.Logical expr,
+                                       in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? left = this.Evaluate(expr.left,
+                                         source);
+
+
+            if (expr.op.Type == OR
+                && this.IsTruthy(left,
+                                 source))
+            {
+                return left;
+
+            }
+
+            if (expr.op.Type == AND && !this.IsTruthy(left,
+                                                      source))
+            {
+                return left;
+            }
+
+            return this.Evaluate(expr.right,
+                                 source);
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr,
