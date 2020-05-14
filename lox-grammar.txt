@@ -38,6 +38,46 @@ bread     -> "toast" | "biscuits" | "English muffin" ;
 
 =========================================*/
 
+// Section 9.4 While Statements
+// =============================
+
+This section adds support for looping 'while' statements.
+
+program -> (declaration* | expression) EOF ;
+
+declaration -> varDecl
+               | statement ;
+
+varDecl -> "var" IDENTIFIER ( "=" expression )? ";";
+
+statement -> exprStmt
+             | ifStmt
+             | printStmt 
+             | whileStmt
+             | block;
+
+exprStmt -> expression ";" ;
+ifStmt -> "if" "(" expression ")" statement ( "else" statement )? ; 
+printStmt -> "print" expression ";";
+whileStmt -> "while" "(" expression ")" statement ;
+block -> "{" declaration* "}" ;
+
+expression -> assignment ;
+assignment -> IDENTIFIER "=" assignment
+              | logic_or ;
+logic_or -> logic_and ( "or" logic_and )* ;
+logic_and -> equality ( "and" equality )* ;
+equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication -> unary ( ( "/" | "*" ) unary )* ;
+unary -> ( "!" | "-" ) unary
+         | primary ;
+primary -> NUMBER | STRING | "false" | "true" | "nil"
+           | "(" expression ")" 
+           | IDENTIFIER;
+
+
 // Section 9.3 Logical Operators
 // =============================
 
@@ -52,7 +92,7 @@ varDecl -> "var" IDENTIFIER ( "=" expression )? ";";
 
 statement -> exprStmt
              | ifStmt
-             | printStmt 
+             | printStmt
              | block;
 
 exprStmt -> expression ";" ;
