@@ -96,6 +96,11 @@ namespace lox
                 return this.IfStatement(source);
             }
 
+            if(this.Match(source, WHILE))
+            {
+                return this.WhileStatement(source);
+            }
+
             if (this.Match(source,
                            PRINT))
             {
@@ -135,6 +140,24 @@ namespace lox
             return new If(condition,
                           thenStatement,
                           elseStatement);
+        }
+
+        private Stmt WhileStatement(in ScannedSource source)
+        {
+            this.Consume(source,
+                         LEFT_PAREN,
+                         "Expect '(' after while.");
+
+            Expr condition = this.Expression(source);
+
+            this.Consume(source,
+                         RIGHT_PAREN,
+                         "Expect ')' after while expression.");
+
+            Stmt statement = this.Statement(source);
+
+            return new While(condition,
+                             statement);
         }
 
         private Stmt PrintStatement(in ScannedSource source)
