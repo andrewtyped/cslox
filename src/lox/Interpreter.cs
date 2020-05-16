@@ -173,7 +173,15 @@ namespace lox
         public Void VisitWhileStmt(Stmt.While stmt,
                                    in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            while (this.IsTruthy(this.Evaluate(stmt.condition,
+                                               source),
+                                 source))
+            {
+                stmt.statement.Accept(this,
+                                      source);
+            }
+
+            return default;
         }
 
         #endregion
