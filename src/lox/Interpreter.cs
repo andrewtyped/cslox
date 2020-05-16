@@ -170,6 +170,12 @@ namespace lox
             return default;
         }
 
+        public Void VisitWhileStmt(Stmt.While stmt,
+                                   in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Expression visitors

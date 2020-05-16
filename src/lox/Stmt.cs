@@ -16,6 +16,7 @@ namespace lox
             R VisitIfStmt(If stmt, in ReadOnlySpan<char> source);
             R VisitPrintStmt(Print stmt, in ReadOnlySpan<char> source);
             R VisitVarStmt(Var stmt, in ReadOnlySpan<char> source);
+            R VisitWhileStmt(While stmt, in ReadOnlySpan<char> source);
         }
 
         public class Block : Stmt
@@ -103,6 +104,25 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitVarStmt(this, source);
+            }
+        }
+
+
+        public class While : Stmt
+        {
+            public While( Expr condition, Stmt statement )
+            {
+                this.condition = condition;
+                this.statement = statement;
+            }
+
+            public readonly Expr condition;
+
+            public readonly Stmt statement;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitWhileStmt(this, source);
             }
         }
 

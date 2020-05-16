@@ -72,6 +72,11 @@ namespace lox
             throw new NotImplementedException();
         }
 
+        public string VisitWhileStmt(Stmt.While stmt, in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Expression visitors
