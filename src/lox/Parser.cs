@@ -91,6 +91,11 @@ namespace lox
 
         private Stmt Statement(in ScannedSource source)
         {
+            if(this.Match(source, FOR))
+            {
+                return this.ForStatement(source);
+            }
+
             if (this.Match(source, IF))
             {
                 return this.IfStatement(source);
@@ -114,6 +119,83 @@ namespace lox
             }
 
             return this.ExpressionStatement(source);
+        }
+
+        private Stmt ForStatement(in ScannedSource source)
+        {
+            this.Consume(source,
+                         LEFT_PAREN,
+                         "Expect '(' after for statement.");
+
+            Stmt? initializer = null;
+
+            if (!this.Match(source,
+                            SEMICOLON))
+            {
+                if (this.Match(source,
+                               VAR))
+                {
+                    initializer = this.VarDecl(source);
+                }
+                else
+                {
+                    initializer = this.ExpressionStatement(source);
+                }
+            }
+
+            Expr? condition = null;
+
+            if (!this.Check(source,
+                            SEMICOLON))
+            {
+                condition = this.Expression(source);
+            }
+
+            this.Consume(source,
+                         SEMICOLON,
+                         "Expect ';' after for condition.");
+
+            Expr? increment = null;
+
+            if (!this.Check(source,
+                            RIGHT_PAREN))
+            {
+                increment = this.Expression(source);
+            }
+
+            this.Consume(source,
+                         RIGHT_PAREN,
+                         "Expect ')' after for increment.");
+
+            Stmt body = this.Statement(source);
+
+            if (increment != null)
+            {
+                body = new Block(new List<Stmt>
+                                 {
+                                     body,
+                                     new Expression(increment)
+                                 });
+            }
+
+            if (condition == null)
+            {
+                condition = new Literal(true);
+            }
+
+            body = new While(condition,
+                             body);
+
+            if (initializer != null)
+            {
+                body = new Block(new List<Stmt>
+                                 {
+                                     initializer,
+                                     body
+                                 });
+            }
+
+            return body;
         }
 
         private Stmt IfStatement(in ScannedSource source)
