@@ -13,6 +13,7 @@ namespace lox
         {
             R VisitAssignExpr(Assign expr, in ReadOnlySpan<char> source);
             R VisitBinaryExpr(Binary expr, in ReadOnlySpan<char> source);
+            R VisitCallExpr(Call expr, in ReadOnlySpan<char> source);
             R VisitGroupingExpr(Grouping expr, in ReadOnlySpan<char> source);
             R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
             R VisitLogicalExpr(Logical expr, in ReadOnlySpan<char> source);
@@ -57,6 +58,28 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitBinaryExpr(this, source);
+            }
+        }
+
+
+        public class Call : Expr
+        {
+            public Call( Expr callee, Token paren, List<Expr> arguments )
+            {
+                this.callee = callee;
+                this.paren = paren;
+                this.arguments = arguments;
+            }
+
+            public readonly Expr callee;
+
+            public readonly Token paren;
+
+            public readonly List<Expr> arguments;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitCallExpr(this, source);
             }
         }
 

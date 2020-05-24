@@ -258,6 +258,12 @@ namespace lox
             };
         }
 
+        public object? VisitCallExpr(Expr.Call expr,
+                                     in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         private object? VisitBinaryPlusOperands(Token op,
                                                 object? left,
                                                 object? right)

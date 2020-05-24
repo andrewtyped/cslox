@@ -89,6 +89,12 @@ namespace lox
                                      expr.value);
         }
 
+        public string VisitCallExpr(Expr.Call expr,
+                                    in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public string VisitVariableExpr(Expr.Variable expr,
                                         in ReadOnlySpan<char> source)
         {
