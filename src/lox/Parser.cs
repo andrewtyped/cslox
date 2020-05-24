@@ -437,7 +437,52 @@ namespace lox
                                  this.Unary(source));
             }
 
-            return this.Primary(source);
+            return this.Call(source);
+        }
+
+        private Expr Call(in ScannedSource source)
+        {
+            Expr expr = this.Primary(source);
+
+            while (true)
+            {
+                if(this.Match(source, LEFT_PAREN))
+                {
+                    expr = this.FinishCall(expr,
+                                           source);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return expr;
+        }
+
+        private Expr FinishCall(Expr callee, 
+                                in ScannedSource source)
+        {
+            var arguments = new List<Expr>();
+
+            if (!this.Check(source,
+                            RIGHT_PAREN))
+            {
+                do
+                {
+                    arguments.Add(this.Expression(source));
+                }
+                while (this.Match(source,
+                                  COMMA));
+            }
+
+            Token paren = this.Consume(source,
+                                       RIGHT_PAREN,
+                                       "Expect ')' after function call arguments");
+
+            return new Call(callee,
+                            paren,
+                            arguments);
         }
 
         private Expr Primary(in ScannedSource source)
