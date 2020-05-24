@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Text;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static lox.Expr;
 
@@ -20,24 +22,6 @@ namespace lox.test.parser
                                   .ToString());
             Assert.AreEqual(0,
                             callExpr.arguments.Count);
-        }
-
-        [TestMethod]
-        public void CanParseNamedFunctionCallWithOneArgument()
-        {
-            var source = "add(1)";
-            var callExpr = this.AssertExpr<Call>(source);
-            var callee = this.AssertExpr<Variable>(callExpr.callee);
-            Assert.AreEqual("add",
-                            callee.name.GetLexeme(source)
-                                  .ToString());
-            Assert.AreEqual(1,
-                            callExpr.arguments.Count);
-            var firstArgument = this.AssertExpr<Literal>(callExpr.arguments[0]);
-
-            Assert.AreEqual(1d,
-                            firstArgument.value);
-
         }
 
         [TestMethod]
@@ -65,7 +49,44 @@ namespace lox.test.parser
 
             Assert.AreEqual(3d,
                             thirdArgument.value);
+        }
 
+        [TestMethod]
+        public void CanParseNamedFunctionCallWithOneArgument()
+        {
+            var source = "add(1)";
+            var callExpr = this.AssertExpr<Call>(source);
+            var callee = this.AssertExpr<Variable>(callExpr.callee);
+            Assert.AreEqual("add",
+                            callee.name.GetLexeme(source)
+                                  .ToString());
+            Assert.AreEqual(1,
+                            callExpr.arguments.Count);
+            var firstArgument = this.AssertExpr<Literal>(callExpr.arguments[0]);
+
+            Assert.AreEqual(1d,
+                            firstArgument.value);
+        }
+
+        [TestMethod]
+        public void LoxDoesNotSupportOver255ArgumentsInAFunction()
+        {
+            var sb = new StringBuilder();
+            sb.Append("Add(");
+
+            for (int i = 1;
+                 i < 256;
+                 i++)
+            {
+                sb.Append(i + ",");
+            }
+
+            sb.Append("256)");
+
+            var source = sb.ToString();
+
+            this.AssertParseErrors2(source,
+                                    "255");
         }
 
         #endregion

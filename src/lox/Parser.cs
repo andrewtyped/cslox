@@ -471,6 +471,13 @@ namespace lox
                 do
                 {
                     arguments.Add(this.Expression(source));
+
+                    if(arguments.Count > Limits.MaxArguments)
+                    {
+                        this.Error(source,
+                                   this.Peek(source),
+                                   "A function cannot have more than 255 arguments.");
+                    }
                 }
                 while (this.Match(source,
                                   COMMA));
