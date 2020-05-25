@@ -261,7 +261,27 @@ namespace lox
         public object? VisitCallExpr(Expr.Call expr,
                                      in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? callee = this.Evaluate(expr,
+                                           source);
+
+            if(callee is null)
+            {
+                throw new RuntimeError(expr.paren,
+                                       "Cannot call a nil expression");
+            }
+
+            List<object?> arguments = new List<object?>();
+
+            for(int i = 0; i < expr.arguments.Count; i++)
+            {
+                arguments.Add(this.Evaluate(expr.arguments[i],
+                                            source));
+            }
+
+            ILoxCallable function = (ILoxCallable)callee;
+            return function.Call(this,
+                                 arguments,
+                                 source);
         }
 
         private object? VisitBinaryPlusOperands(Token op,
