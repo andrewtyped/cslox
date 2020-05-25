@@ -280,6 +280,12 @@ namespace lox
 
             if (callee is ILoxCallable function)
             {
+                if (arguments.Count != function.Arity())
+                {
+                    throw new RuntimeError(expr.paren,
+                                           $"Expected {function.Arity()} arguments but got {arguments.Count}.");
+                }
+
                 return function.Call(this,
                                      arguments,
                                      source);

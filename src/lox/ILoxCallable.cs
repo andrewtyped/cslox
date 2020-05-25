@@ -10,6 +10,8 @@ namespace lox
     {
         #region Instance Methods
 
+        int Arity();
+
         object? Call(Interpreter interpreter,
                      List<object?> arguments,
                      in ReadOnlySpan<char> source);
