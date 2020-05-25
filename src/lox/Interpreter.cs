@@ -278,10 +278,15 @@ namespace lox
                                             source));
             }
 
-            ILoxCallable function = (ILoxCallable)callee;
-            return function.Call(this,
-                                 arguments,
-                                 source);
+            if (callee is ILoxCallable function)
+            {
+                return function.Call(this,
+                                     arguments,
+                                     source);
+            }
+
+            throw new RuntimeError(expr.paren,
+                                   "Can only call functions and classes.");
         }
 
         private object? VisitBinaryPlusOperands(Token op,
