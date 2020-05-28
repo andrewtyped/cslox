@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lox.loxFunctions;
+using System;
 using System.Collections.Generic;
 
 using static lox.constants.TokenType;
@@ -15,6 +16,8 @@ namespace lox
 
         private IConsole console;
 
+        private readonly Environment globals;
+
         #endregion
 
         #region Constructors
@@ -22,6 +25,14 @@ namespace lox
         public Interpreter(IConsole console)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.globals = new Environment();
+            this.globals.Define("clock",
+                                new Token(0,
+                                          5,
+                                          0,
+                                          IDENTIFIER),
+                                new Clock(new DateTimeOffsetProvider()));
+            this.Environment = this.globals;
         }
 
         public Interpreter()
@@ -37,7 +48,7 @@ namespace lox
         {
             get;
             private set;
-        } = new Environment();
+        }
 
         /// <summary>
         /// Gets the last error encountered while interpreting.
