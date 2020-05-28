@@ -261,7 +261,7 @@ namespace lox
         public object? VisitCallExpr(Expr.Call expr,
                                      in ReadOnlySpan<char> source)
         {
-            object? callee = this.Evaluate(expr,
+            object? callee = this.Evaluate(expr.callee,
                                            source);
 
             if(callee is null)
