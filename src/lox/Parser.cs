@@ -53,6 +53,12 @@ namespace lox
         {
             try
             {
+                if(this.Match(source, FUN))
+                {
+                    return this.Function(source,
+                                         "function");
+                }
+
                 if (this.Match(source,
                                VAR))
                 {
@@ -66,6 +72,53 @@ namespace lox
                 this.Synchronize(source);
                 return new Expression(new Literal(null));
             }
+        }
+
+        private Stmt Function(in ScannedSource source, 
+                              string kind)
+        {
+            Token name = this.Consume(source,
+                                      IDENTIFIER,
+                                      $"Expect {kind} name.");
+
+            this.Consume(source,
+                         LEFT_PAREN,
+                         $"Expect '(' after {kind} name.");
+
+            List<Token> parameters = new List<Token>();
+
+            if(!this.Check(source, RIGHT_PAREN))
+            {
+                do
+                {
+                    if(parameters.Count >= Limits.MaxArguments)
+                    {
+                        this.Error(source,
+                                   this.Peek(source),
+                                   $"{kind} cannot have more than {Limits.MaxArguments} parameters.");
+                    }
+
+                    parameters.Add(this.Consume(source,
+                                                IDENTIFIER,
+                                                "Expect parameter name."));
+                }
+                while (this.Match(source,
+                                  COMMA));
+            }
+
+            this.Consume(source,
+                         RIGHT_PAREN,
+                         $"Expect ')' after {kind} parameter list.");
+
+            this.Consume(source,
+                         LEFT_BRACE,
+                         $"Expect '{{' after {kind} parameters");
+
+            Block body = this.BlockStatement(source);
+
+            return new Function(name,
+                                parameters,
+                                body.statements);
         }
 
         private Stmt VarDecl(in ScannedSource source)
@@ -251,7 +304,7 @@ namespace lox
             return new Print(value);
         }
 
-        private Stmt BlockStatement(in ScannedSource source)
+        private Block BlockStatement(in ScannedSource source)
         {
             var statements = new List<Stmt>();
 
