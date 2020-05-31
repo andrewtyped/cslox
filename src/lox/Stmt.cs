@@ -13,6 +13,7 @@ namespace lox
         {
             R VisitBlockStmt(Block stmt, in ReadOnlySpan<char> source);
             R VisitExpressionStmt(Expression stmt, in ReadOnlySpan<char> source);
+            R VisitFunctionStmt(Function stmt, in ReadOnlySpan<char> source);
             R VisitIfStmt(If stmt, in ReadOnlySpan<char> source);
             R VisitPrintStmt(Print stmt, in ReadOnlySpan<char> source);
             R VisitVarStmt(Var stmt, in ReadOnlySpan<char> source);
@@ -47,6 +48,28 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitExpressionStmt(this, source);
+            }
+        }
+
+
+        public class Function : Stmt
+        {
+            public Function( Token name, List<Token> parameters, List<Stmt> body )
+            {
+                this.name = name;
+                this.parameters = parameters;
+                this.body = body;
+            }
+
+            public readonly Token name;
+
+            public readonly List<Token> parameters;
+
+            public readonly List<Stmt> body;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitFunctionStmt(this, source);
             }
         }
 

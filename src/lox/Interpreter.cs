@@ -90,6 +90,12 @@ namespace lox
 
         #region Statement visitors
 
+        public Void VisitFunctionStmt(Stmt.Function stmt, 
+                                      in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public Void VisitIfStmt(Stmt.If stmt, in ReadOnlySpan<char> source)
         {
             object? condition = this.Evaluate(stmt.condition,
