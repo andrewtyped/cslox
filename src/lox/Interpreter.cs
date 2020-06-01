@@ -93,7 +93,12 @@ namespace lox
         public Void VisitFunctionStmt(Stmt.Function stmt, 
                                       in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            LoxFunction loxFunction = new LoxFunction(source,
+                                                      stmt);
+            Environment.Define(source,
+                               stmt.name,
+                               loxFunction);
+            return default;
         }
 
         public Void VisitIfStmt(Stmt.If stmt, in ReadOnlySpan<char> source)
@@ -117,7 +122,7 @@ namespace lox
         }
 
         public Void VisitBlockStmt(Stmt.Block stmt,
-                                        in ReadOnlySpan<char> source)
+                                   in ReadOnlySpan<char> source)
         {
             this.ExecuteBlock(stmt.statements,
                               new Environment(this.Environment),
@@ -126,7 +131,7 @@ namespace lox
             return default;
         }
 
-        private void ExecuteBlock(List<Stmt> stmts,
+        public void ExecuteBlock(List<Stmt> stmts,
                                   Environment environment,
                                   in ReadOnlySpan<char> source)
         {
