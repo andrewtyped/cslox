@@ -165,6 +165,12 @@ namespace lox
                 return this.PrintStatement(source);
             }
 
+            if(this.Match(source, 
+                          RETURN))
+            {
+                return this.ReturnStatement(source);
+            }
+
             if (this.Match(source,
                            LEFT_BRACE))
             {
@@ -302,6 +308,24 @@ namespace lox
                          SEMICOLON,
                          "Expect ';' after value");
             return new Print(value);
+        }
+
+        private Stmt ReturnStatement(in ScannedSource source)
+        {
+            Token keyword = this.Previous(source);
+            Expr? value = null;
+
+            if(!this.Check(source, SEMICOLON))
+            {
+                value = this.Expression(source);
+            }
+
+            this.Consume(source,
+                         SEMICOLON,
+                         "Expect ';' after return statement.");
+
+            return new Return(keyword,
+                              value);
         }
 
         private Block BlockStatement(in ScannedSource source)

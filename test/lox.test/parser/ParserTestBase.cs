@@ -47,6 +47,7 @@ namespace lox.test.parser
             {
                 Stmt.Expression expr => this.AssertExpr<T>(expr.expression),
                 Stmt.Print print => this.AssertExpr<T>(print.expression),
+                Stmt.Return @return => this.AssertExpr<T>(@return.value),
                 _ => throw new InvalidOperationException($"Unrecognized stmt type ")
             };
         }
