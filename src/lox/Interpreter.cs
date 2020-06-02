@@ -177,7 +177,15 @@ namespace lox
         public Void VisitReturnStmt(Stmt.Return stmt,
                                     in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? value = null;
+
+            if(stmt.value != null)
+            {
+                value = stmt.value.Accept(this,
+                                          source);
+            }
+
+            throw new ReturnValue(value);
         }
 
         public Void VisitVarStmt(Stmt.Var stmt,
@@ -314,9 +322,16 @@ namespace lox
                                            $"Expected {function.Arity()} arguments but got {arguments.Count}.");
                 }
 
-                return function.Call(this,
-                                     arguments,
-                                     source);
+                try
+                {
+                    return function.Call(this,
+                                         arguments,
+                                         source);
+                }
+                catch(ReturnValue returnValue)
+                {
+                    return returnValue.Value;
+                }
             }
 
             throw new RuntimeError(expr.paren,
