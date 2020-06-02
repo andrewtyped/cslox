@@ -40,6 +40,7 @@ namespace tool
                           "Function   : Token name, List<Token> parameters, List<Stmt> body",
                           "If         : Expr condition, Stmt thenBranch, Stmt? elseBranch",
                           "Print      : Expr expression",
+                          "Return     : Token keyword, Expr? value",
                           "Var        : Token name, Expr? initializer",
                           "While      : Expr condition, Stmt statement"
                       });

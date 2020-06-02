@@ -174,6 +174,12 @@ namespace lox
             return default;
         }
 
+        public Void VisitReturnStmt(Stmt.Return stmt,
+                                    in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public Void VisitVarStmt(Stmt.Var stmt,
                                  in ReadOnlySpan<char> source)
         {

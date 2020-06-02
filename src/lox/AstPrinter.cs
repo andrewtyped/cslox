@@ -73,6 +73,21 @@ namespace lox
                                      stmt.expression);
         }
 
+        public string VisitReturnStmt(Stmt.Return stmt,
+                                      in ReadOnlySpan<char> source)
+        {
+            if(stmt.value is null)
+            {
+                return this.Parenthesize("return",
+                                         source,
+                                         Array.Empty<Expr>());
+            }
+
+            return this.Parenthesize("return",
+                                     source,
+                                     stmt.value);
+        }
+
         public string VisitVarStmt(Stmt.Var stmt, in ReadOnlySpan<char> source)
         {
             throw new NotImplementedException();
