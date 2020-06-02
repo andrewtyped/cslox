@@ -94,7 +94,8 @@ namespace lox
                                       in ReadOnlySpan<char> source)
         {
             LoxFunction loxFunction = new LoxFunction(source,
-                                                      stmt);
+                                                      stmt,
+                                                      this.Environment);
             Environment.Define(source,
                                stmt.name,
                                loxFunction);

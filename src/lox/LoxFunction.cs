@@ -14,6 +14,8 @@ namespace lox
 
         private readonly Function declaration;
 
+        private readonly Environment closure;
+
         private readonly string functionName;
 
         #endregion
@@ -21,7 +23,8 @@ namespace lox
         #region Constructors
 
         public LoxFunction(in ReadOnlySpan<char> source,
-                           Function declaration)
+                           Function declaration,
+                           Environment closure)
         {
             if (declaration == null)
             {
@@ -29,6 +32,7 @@ namespace lox
             }
 
             this.declaration = declaration;
+            this.closure = closure ?? throw new ArgumentNullException(nameof(closure));
 
             this.functionName = declaration.name.GetLexeme(source)
                                            .ToString();
@@ -49,7 +53,7 @@ namespace lox
                             List<object?> arguments,
                             in ReadOnlySpan<char> source)
         {
-            Environment environment = new Environment(interpreter.Environment);
+            Environment environment = new Environment(this.closure);
 
             for (int i = 0;
                  i < arguments.Count;
