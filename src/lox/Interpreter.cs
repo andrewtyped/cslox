@@ -18,6 +18,8 @@ namespace lox
 
         private readonly Environment globals;
 
+        private readonly Dictionary<Expr, int> locals;
+
         #endregion
 
         #region Constructors
@@ -25,6 +27,7 @@ namespace lox
         public Interpreter(IConsole console)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.locals = new Dictionary<Expr, int>();
             this.globals = new Environment();
             this.globals.Define("clock",
                                 new Token(0,
@@ -49,6 +52,8 @@ namespace lox
             get;
             private set;
         }
+
+        internal IReadOnlyDictionary<Expr, int> Locals => this.locals;
 
         /// <summary>
         /// Gets the last error encountered while interpreting.
@@ -84,6 +89,11 @@ namespace lox
                 this.LastError = runtimeError;
                 Lox.RuntimeError(runtimeError);
             }
+        }
+
+        internal void Resolve(Expr expr, int depth)
+        {
+            this.locals[expr] = depth;
         }
 
         #endregion
