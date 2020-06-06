@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using lox.constants;
+
+using static lox.constants.FunctionType;
+
 namespace lox
 {
     /// <summary>
@@ -14,6 +18,8 @@ namespace lox
         private readonly Interpreter interpreter;
 
         private readonly Stack<Dictionary<string, bool>> scopes;
+
+        private FunctionType currentFunction = NONE;
 
         internal readonly List<string> errors;
 
@@ -111,6 +117,7 @@ namespace lox
                         source);
 
             this.ResolveFunction(stmt,
+                                 FUNCTION,
                                  source);
             return default;
         }
@@ -166,12 +173,18 @@ namespace lox
         public Void VisitReturnStmt(Stmt.Return stmt,
                                     in ReadOnlySpan<char> source)
         {
+            if(currentFunction == NONE)
+            {
+                this.Error(stmt.keyword.Line,
+                           "Return statements are only allowed in functions and methods.");
+            }
+
             if (stmt.value != null)
             {
                 this.Resolve(stmt.value,
                              source);
             }
-
+            
             return default;
         }
 
@@ -295,8 +308,11 @@ namespace lox
         }
 
         private void ResolveFunction(Stmt.Function stmt,
+                                     FunctionType functionType,
                                      in ReadOnlySpan<char> source)
         {
+            FunctionType enclosingFunction = this.currentFunction;
+            this.currentFunction = functionType;
             this.BeginScope();
 
             for (int i = 0;
@@ -313,6 +329,7 @@ namespace lox
                          source);
 
             this.EndScope();
+            this.currentFunction = enclosingFunction;
         }
 
         private void ResolveLocal(Expr expr,

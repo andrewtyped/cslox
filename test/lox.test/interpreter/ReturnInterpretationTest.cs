@@ -67,5 +67,13 @@ print nop();";
             this.Interpret(source);
             this.AssertPrints("nil");
         }
+
+        [TestMethod]
+        public void CannotReturnWhenNotInAFunction()
+        {
+            var source = "return 1;";
+            this.AssertResolutionError(source,
+                                       "Return statements are only allowed in functions and methods.");
+        }
     }
 }
