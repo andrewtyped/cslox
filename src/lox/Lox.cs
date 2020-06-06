@@ -68,6 +68,11 @@ namespace lox
             resolver.Resolve(expr,
                              scannedsource.Source);
 
+            if (hadError)
+            {
+                return EX_DATAERR;
+            }
+
             interpreter.Interpret(expr,
                                   scannedsource.Source);
 
