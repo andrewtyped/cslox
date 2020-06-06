@@ -15,6 +15,8 @@ namespace lox
 
         private readonly Stack<Dictionary<string, bool>> scopes;
 
+        internal readonly List<string> errors;
+
         #endregion
 
         #region Constructors
@@ -23,6 +25,7 @@ namespace lox
         {
             this.interpreter = interpreter ?? throw new ArgumentNullException(nameof(interpreter));
             this.scopes = new Stack<Dictionary<string, bool>>();
+            this.errors = new List<string>();
         }
 
         #endregion
@@ -32,6 +35,8 @@ namespace lox
         public void Resolve(List<Stmt> stmts,
                             in ReadOnlySpan<char> source)
         {
+            this.errors.Clear();
+
             for (int i = 0;
                  i < stmts.Count;
                  i++)
@@ -191,8 +196,8 @@ namespace lox
                 {
                     if (!defined)
                     {
-                        Lox.Error(expr.name.Line,
-                                  $"Cannot read local variable '{name}' in its own initializer");
+                        this.Error(expr.name.Line,
+                                   $"Cannot read local variable '{name}' in its own initializer");
                         return default;
                     }
                 }
@@ -245,8 +250,16 @@ namespace lox
             }
 
             Dictionary<string, bool> scope = this.scopes.Peek();
-            scope[name.GetLexeme(source)
-                      .ToString()] = false;
+            string lexeme = name.GetLexeme(source)
+                                .ToString();
+
+            if (scope.ContainsKey(lexeme))
+            {
+                this.Error(name.Line,
+                           $"Variable '{lexeme}' is already declared in this scope.");
+            }
+
+            scope[lexeme] = false;
         }
 
         private void Define(Token name,
@@ -336,6 +349,18 @@ namespace lox
                     this.scopes.Push(tempScope);
                 }
             }
+        }
+
+        #endregion
+
+        #region Error Handling
+
+        private void Error(int line,
+                           string message)
+        {
+            Lox.Error(line,
+                      message);
+            this.errors.Add(message);
         }
 
         #endregion

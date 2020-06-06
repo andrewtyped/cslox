@@ -42,6 +42,33 @@ namespace lox.test.interpreter
             } 
         }
 
+        protected void AssertResolutionError(string source,
+                                             params string[] expectedTexts)
+        {
+            var stmts = this.Parse(source);
+
+            var resolver = new Resolver(this.Interpreter);
+            resolver.Resolve(stmts,
+                             source);
+
+            var resolverErrors = string.Join(System.Environment.NewLine,
+                                             resolver.errors);
+
+            if(resolver.errors.Count != expectedTexts.Length)
+            {
+                Assert.Fail($"Expected {expectedTexts.Length} resolution errors, but found {resolver.errors.Count}: {resolverErrors}");
+            }
+
+            for(int i = 0; i < resolver.errors.Count; i++)
+            {
+                var actualError = resolver.errors[i];
+                var expectedError = expectedTexts[i];
+
+                Assert.AreEqual(expectedError,
+                                actualError);
+            }
+        }
+
         protected void AssertRuntimeError(string source,
                                           TokenType op,
                                           string expectedError)
@@ -85,6 +112,13 @@ namespace lox.test.interpreter
             var resolver = new Resolver(this.Interpreter);
             resolver.Resolve(stmts,
                              source);
+
+            if (resolver.errors.Any())
+            {
+                var resolverErrors = string.Join(System.Environment.NewLine,
+                                                 resolver.errors);
+                Assert.Fail($"Expected no resolution errors, but found: {resolverErrors}");
+            }
 
             this.Interpreter.Interpret(stmts,
                                        source);

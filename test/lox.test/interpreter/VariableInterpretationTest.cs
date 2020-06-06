@@ -76,6 +76,23 @@ namespace lox.test.interpreter
             this.AssertPrints("1");
         }
 
+        [TestMethod]
+        public void CanDeclareAVariableTwiceInGlobalScope()
+        {
+            var source = @"var foo = 1; var foo = 2;";
+            this.Interpret(source);
+            this.AssertVariable("foo",
+                                2d);
+        }
+
+        [TestMethod]
+        public void CannotDeclareAVariableTwiceInTheSameLocalScope()
+        {
+            var source = @"{var foo = 1; var foo = 2;}";
+            this.AssertResolutionError(source,
+                                       "Variable 'foo' is already declared in this scope.");
+        }
+
         #endregion
     }
 }
