@@ -273,6 +273,82 @@ namespace lox.test
             Assert.AreEqual(3d,
                             value);
         }
+
+        [TestMethod]
+        public void CanGetVariableFromExplicitScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  2,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            parentEnvironment.Define(source,
+                                     token,
+                                     1d);
+            var childEnvironment1 = new Environment(parentEnvironment);
+            var childEnvironment2 = new Environment(childEnvironment1);
+
+            var foo = parentEnvironment.GetAt(source,
+                                            token,
+                                            0);
+            Assert.AreEqual(1d,
+                            foo);
+            var foo1 = childEnvironment1.GetAt(source,
+                                               token,
+                                               1);
+            Assert.AreEqual(1d,
+                            foo1);
+            var foo2 = childEnvironment2.GetAt(source,
+                                               token,
+                                               2);
+            Assert.AreEqual(1d,
+                            foo2);
+        }
+
+        [TestMethod]
+        public void CanAssignVariableAtExplicitScope()
+        {
+            var source = "foo";
+            var token = new Token(0,
+                                  3,
+                                  1,
+                                  TokenType.IDENTIFIER);
+            var parentEnvironment = new Environment();
+
+            parentEnvironment.Define(source,
+                                     token,
+                                     1d);
+            var childEnvironment1 = new Environment(parentEnvironment);
+            var childEnvironment2 = new Environment(childEnvironment1);
+
+            parentEnvironment.AssignAt(source,
+                                       token,
+                                       2d,
+                                       0);
+
+            Assert.AreEqual(2d,
+                            parentEnvironment.Get(source));
+
+            childEnvironment1.AssignAt(source,
+                                       token,
+                                       3d,
+                                       1);
+            Assert.AreEqual(3d,
+                            parentEnvironment.Get(source));
+
+            childEnvironment2.AssignAt(source,
+                                       token,
+                                       4d,
+                                       2);
+            Assert.AreEqual(4d,
+                            parentEnvironment.Get(source));
+
+
+
+        }
+
         #endregion
     }
 }
