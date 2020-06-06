@@ -32,6 +32,25 @@ counter();";
                               "3");
         }
 
+        [TestMethod]
+        public void ClosuresCaptureVariablesAtTheScopeTheyWereDefined()
+        {
+            var source = @"var a = ""global"";
+    {
+        fun showA() {
+            print a;
+        }
+
+        showA();
+        var a = ""block"";
+        showA();
+    }";
+
+            this.Interpret(source);
+            this.AssertPrints("global",
+                              "global");
+        }
+
         #endregion
     }
 }

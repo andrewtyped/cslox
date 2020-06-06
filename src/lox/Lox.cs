@@ -64,6 +64,10 @@ namespace lox
                 return EX_DATAERR;
             }
 
+            var resolver = new Resolver(interpreter);
+            resolver.Resolve(expr,
+                             scannedsource.Source);
+
             interpreter.Interpret(expr,
                                   scannedsource.Source);
 

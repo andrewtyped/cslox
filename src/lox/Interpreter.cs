@@ -238,8 +238,8 @@ namespace lox
         public object? VisitVariableExpr(Expr.Variable expr,
                                          in ReadOnlySpan<char> source)
         {
-            return this.Environment.Get(source,
-                                        expr.name);
+            return this.LookupVariable(expr,
+                                       source);
         }
 
         public object? VisitAssignExpr(Expr.Assign expr,
@@ -248,9 +248,21 @@ namespace lox
             object? value = this.Evaluate(expr.value,
                                           source);
 
-            this.Environment.Assign(source,
+            if(this.locals.TryGetValue(expr, 
+                                       out int distance))
+            {
+                this.Environment.AssignAt(source,
+                                          expr.name,
+                                          value,
+                                          distance);
+            }
+            else
+            {
+                this.globals.Assign(source,
                                     expr.name,
                                     value);
+            }
+
             return value;
         }
 
@@ -432,6 +444,22 @@ namespace lox
         #endregion
 
         #region Utilities
+
+        private object? LookupVariable(Expr.Variable expr,
+                                       in ReadOnlySpan<char> source)
+        {
+            if (this.locals.TryGetValue(expr,
+                                        out int distance))
+            {
+                return this.Environment.GetAt(source,
+                                              expr.name,
+                                              distance);
+            }
+
+            return this.globals.Get(source,
+                                    expr.name);
+        }
+
 
         private double? Negate(Token token,
                                object? value)

@@ -81,6 +81,11 @@ namespace lox.test.interpreter
         protected void InterpretStmts(string source)
         {
             var stmts = this.Parse(source);
+
+            var resolver = new Resolver(this.Interpreter);
+            resolver.Resolve(stmts,
+                             source);
+
             this.Interpreter.Interpret(stmts,
                                        source);
         }
