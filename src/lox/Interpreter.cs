@@ -376,7 +376,16 @@ namespace lox
         public object? VisitGetExpr(Expr.Get expr,
                                     in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? instance = this.Evaluate(expr.@object,
+                                             source);
+            if(instance is LoxInstance loxInstance)
+            {
+                return loxInstance.Get(expr.name,
+                                       source);
+            }
+
+            throw new RuntimeError(expr.name,
+                                   "Only instances have properties.");
         }
 
         private object? VisitBinaryPlusOperands(Token op,
