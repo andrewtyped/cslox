@@ -12,6 +12,7 @@ namespace lox
         public interface IVisitor<R>
         {
             R VisitBlockStmt(Block stmt, in ReadOnlySpan<char> source);
+            R VisitClassStmt(Class stmt, in ReadOnlySpan<char> source);
             R VisitExpressionStmt(Expression stmt, in ReadOnlySpan<char> source);
             R VisitFunctionStmt(Function stmt, in ReadOnlySpan<char> source);
             R VisitIfStmt(If stmt, in ReadOnlySpan<char> source);
@@ -33,6 +34,25 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitBlockStmt(this, source);
+            }
+        }
+
+
+        public class Class : Stmt
+        {
+            public Class( Token name, List<Stmt.Function> methods )
+            {
+                this.name = name;
+                this.methods = methods;
+            }
+
+            public readonly Token name;
+
+            public readonly List<Stmt.Function> methods;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitClassStmt(this, source);
             }
         }
 

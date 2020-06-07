@@ -100,6 +100,12 @@ namespace lox
             return default;
         }
 
+        public Void VisitClassStmt(Stmt.Class stmt,
+                                   in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public Void VisitExpressionStmt(Stmt.Expression stmt,
                                         in ReadOnlySpan<char> source)
         {
