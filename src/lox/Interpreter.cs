@@ -373,6 +373,12 @@ namespace lox
                                    "Can only call functions and classes.");
         }
 
+        public object? VisitGetExpr(Expr.Get expr,
+                                    in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         private object? VisitBinaryPlusOperands(Token op,
                                                 object? left,
                                                 object? right)

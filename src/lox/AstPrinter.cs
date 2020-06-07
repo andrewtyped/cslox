@@ -122,6 +122,13 @@ namespace lox
             throw new NotImplementedException();
         }
 
+        public string VisitGetExpr(Expr.Get expr, in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize("get",
+                                     source,
+                                     expr.@object);
+        }
+
         public string VisitVariableExpr(Expr.Variable expr,
                                         in ReadOnlySpan<char> source)
         {
