@@ -135,7 +135,9 @@ namespace lox
         public object? VisitGetExpr(Expr.Get expr, 
                                     in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.Resolve(expr.@object,
+                         source);
+            return default;
         }
 
         public object? VisitGroupingExpr(Expr.Grouping expr,

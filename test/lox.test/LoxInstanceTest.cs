@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using lox.constants;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace lox.test
 {
@@ -25,6 +26,21 @@ namespace lox.test
                             instance.ToString());
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeError))]
+        public void LoxInstanceThrowsRuntimeErrorWhenGettingUndefinedFieldValue()
+        {
+            var @class = new LoxClass("foo");
+            var instance = new LoxInstance(@class);
+            var source = "bar";
+            var token = new Token(0,
+                                  2,
+                                  0,
+                                  TokenType.IDENTIFIER);
+
+            instance.Get(token,
+                         source);
+        }
         #endregion
     }
 }
