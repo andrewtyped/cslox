@@ -53,6 +53,11 @@ namespace lox
         {
             try
             {
+                if(this.Match(source, CLASS))
+                {
+                    return this.Class(source);
+                }
+
                 if(this.Match(source, FUN))
                 {
                     return this.Function(source,
@@ -74,8 +79,35 @@ namespace lox
             }
         }
 
-        private Stmt Function(in ScannedSource source, 
-                              string kind)
+        private Stmt Class(in ScannedSource source)
+        {
+            Token name = this.Consume(source,
+                                      IDENTIFIER,
+                                      "Expect name after class declaration.");
+            this.Consume(source,
+                         LEFT_BRACE,
+                         "Expect '{' after class name.");
+
+            var methods = new List<Stmt.Function>();
+
+            while (!this.Check(source,
+                               RIGHT_BRACE)
+                   && !this.IsAtEnd(source))
+            {
+                methods.Add(this.Function(source,
+                                          "method"));
+            }
+
+            this.Consume(source,
+                         RIGHT_BRACE,
+                         "Expect '}' after class methods");
+
+            return new Class(name,
+                             methods);
+        }
+
+        private Stmt.Function Function(in ScannedSource source, 
+                                       string kind)
         {
             Token name = this.Consume(source,
                                       IDENTIFIER,
