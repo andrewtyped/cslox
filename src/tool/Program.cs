@@ -27,7 +27,8 @@ namespace tool
                           "Get      : Token name, Expr @object",
                           "Grouping : Expr expression",
                           "Literal  : object? value",
-                          "Logical   : Expr left, Token op, Expr right",
+                          "Logical  : Expr left, Token op, Expr right",
+                          "Set      : Expr @object, Token name, Expr value",
                           "Unary    : Token op, Expr right",
                           "Variable : Token name",
                       });

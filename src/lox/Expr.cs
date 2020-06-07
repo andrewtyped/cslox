@@ -18,6 +18,7 @@ namespace lox
             R VisitGroupingExpr(Grouping expr, in ReadOnlySpan<char> source);
             R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
             R VisitLogicalExpr(Logical expr, in ReadOnlySpan<char> source);
+            R VisitSetExpr(Set expr, in ReadOnlySpan<char> source);
             R VisitUnaryExpr(Unary expr, in ReadOnlySpan<char> source);
             R VisitVariableExpr(Variable expr, in ReadOnlySpan<char> source);
         }
@@ -154,6 +155,28 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitLogicalExpr(this, source);
+            }
+        }
+
+
+        public class Set : Expr
+        {
+            public Set( Expr @object, Token name, Expr value )
+            {
+                this.@object = @object;
+                this.name = name;
+                this.value = value;
+            }
+
+            public readonly Expr @object;
+
+            public readonly Token name;
+
+            public readonly Expr value;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitSetExpr(this, source);
             }
         }
 

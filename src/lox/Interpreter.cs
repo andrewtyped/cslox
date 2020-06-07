@@ -452,6 +452,12 @@ namespace lox
                                  source);
         }
 
+        public object? VisitSetExpr(Expr.Set expr,
+                                    in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitUnaryExpr(Expr.Unary expr,
                                       in ReadOnlySpan<char> source)
         {

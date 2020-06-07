@@ -129,6 +129,14 @@ namespace lox
                                      expr.@object);
         }
 
+        public string VisitSetExpr(Expr.Set expr, in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize("set",
+                                     source,
+                                     expr.@object,
+                                     expr.value);
+        }
+
         public string VisitVariableExpr(Expr.Variable expr,
                                         in ReadOnlySpan<char> source)
         {
