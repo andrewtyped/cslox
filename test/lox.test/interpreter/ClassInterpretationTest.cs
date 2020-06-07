@@ -22,5 +22,20 @@ print foo;";
 
             this.AssertPrints("foo");
         }
+
+        [TestMethod]
+        public void CanCreateInstanceOfClass()
+        {
+            var source = @"
+class foo { 
+  hello(){} 
+  world(){} 
+}
+var fooInstance = foo();
+print fooInstance;";
+
+            this.Interpret(source);
+            this.AssertPrints("foo instance");
+        }
     }
 }

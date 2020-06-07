@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,6 +23,14 @@ namespace lox.test
             var @class = new LoxClass("foo");
             Assert.AreEqual("foo",
                             @class.ToString());
+        }
+
+        [TestMethod]
+        public void LoxClassHasArity0()
+        {
+            var @class = new LoxClass("foo");
+            Assert.AreEqual(0,
+                            @class.Arity());
         }
     }
 }

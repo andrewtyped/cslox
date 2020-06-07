@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace lox
 {
     /// <summary>
     /// Represents a native lox class, its methods, and state.
     /// </summary>
-    public class LoxClass
+    public class LoxClass : ILoxCallable
     {
         #region Constructors
 
@@ -36,6 +37,19 @@ namespace lox
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public int Arity()
+        {
+            return 0;
+        }
+
+        public object? Call(Interpreter interpreter,
+                            List<object?> arguments,
+                            in ReadOnlySpan<char> source)
+        {
+            LoxInstance instance = new LoxInstance(this);
+            return instance;
         }
 
         #endregion
