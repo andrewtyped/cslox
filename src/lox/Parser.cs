@@ -418,6 +418,12 @@ namespace lox
                     return new Assign(name,
                                       value);
                 }
+                else if(expr is Get get)
+                {
+                    return new Set(get.@object,
+                                   get.name,
+                                   value);
+                }
 
                 this.Error(source,
                            equals,
