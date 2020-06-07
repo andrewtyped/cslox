@@ -103,7 +103,13 @@ namespace lox
         public Void VisitClassStmt(Stmt.Class stmt,
                                    in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.Environment.Define(source, stmt.name, null);
+            LoxClass @class = new LoxClass(stmt.name.GetLexeme(source)
+                                               .ToString());
+            this.Environment.Assign(source,
+                                    stmt.name,
+                                    @class);
+            return default;
         }
 
         public Void VisitFunctionStmt(Stmt.Function stmt, 

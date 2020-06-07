@@ -103,7 +103,11 @@ namespace lox
         public Void VisitClassStmt(Stmt.Class stmt,
                                    in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.Declare(stmt.name,
+                         source);
+            this.Define(stmt.name,
+                        source);
+            return default;
         }
 
         public Void VisitExpressionStmt(Stmt.Expression stmt,
