@@ -555,10 +555,20 @@ namespace lox
 
             while (true)
             {
-                if(this.Match(source, LEFT_PAREN))
+                if(this.Match(source, 
+                              LEFT_PAREN))
                 {
                     expr = this.FinishCall(expr,
                                            source);
+                }
+                else if(this.Match(source, 
+                                   DOT))
+                {
+                    Token name = this.Consume(source,
+                                              IDENTIFIER,
+                                              "Expect identifier after '.'.");
+                    expr = new Get(name,
+                                   expr);
                 }
                 else
                 {
