@@ -41,6 +41,29 @@ namespace lox.test
             instance.Get(token,
                          source);
         }
+
+        [TestMethod]
+        public void LoxInstanceSetsFieldValue()
+        {
+            var @class = new LoxClass("foo");
+            var instance = new LoxInstance(@class);
+            var source = "bar";
+            var token = new Token(0,
+                                  2,
+                                  0,
+                                  TokenType.IDENTIFIER);
+
+            instance.Set(token,
+                         1d,
+                         source);
+
+            var value = instance.Get(token,
+                                     source);
+            Assert.AreEqual(1d,
+                            value);
+
+        }
+
         #endregion
     }
 }

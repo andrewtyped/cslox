@@ -58,6 +58,14 @@ namespace lox
                                    $"Undefined property {nameLexeme} on object {this.Class.Name}");
         }
 
+        public void Set(Token token,
+                          object? value,
+                          in ReadOnlySpan<char> source)
+        {
+            this.fields[token.GetLexeme(source)
+                             .ToString()] = value;
+        }
+
         #endregion
     }
 }

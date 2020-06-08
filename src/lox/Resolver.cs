@@ -209,7 +209,11 @@ namespace lox
         public object? VisitSetExpr(Expr.Set expr,
                                     in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.Resolve(expr.value,
+                         source);
+            this.Resolve(expr.@object,
+                         source);
+            return default;
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr,

@@ -455,7 +455,20 @@ namespace lox
         public object? VisitSetExpr(Expr.Set expr,
                                     in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            object? value = this.Evaluate(expr.value,
+                                          source);
+            object? instance = this.Evaluate(expr.@object,
+                                             source);
+            if(instance is LoxInstance loxInstance)
+            {
+                loxInstance.Set(expr.name,
+                                value,
+                                source);
+                return value;
+            }
+
+            throw new RuntimeError(expr.name,
+                                   "Only instances have properties.");
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr,
