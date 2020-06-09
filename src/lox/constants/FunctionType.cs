@@ -4,6 +4,8 @@
     {
         NONE,
 
+        INITIALIZER,
+
         FUNCTION,
 
         METHOD

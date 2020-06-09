@@ -133,5 +133,19 @@ print person2;
             this.Interpret(source);
             this.AssertPrints("Person instance");
         }
+
+        [TestMethod]
+        public void CannotReturnFromInit()
+        {
+            var source = @"
+class Person {
+  init() {
+    return ""hello"";
+  }
+}
+";
+            this.AssertResolutionError(source,
+                                       "Return statements are only allowed in functions and methods.");
+        }
     }
 }

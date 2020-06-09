@@ -119,7 +119,14 @@ namespace lox
 
             for(int i = 0; i < stmt.methods.Count; i++)
             {
-                FunctionType declaration = METHOD;
+                string name = stmt.methods[i]
+                                  .name.GetLexeme(source)
+                                  .ToString();
+
+                FunctionType declaration = name == "init"
+                                               ? INITIALIZER
+                                               : METHOD;
+
                 this.ResolveFunction(stmt.methods[i],
                                      declaration,
                                      source);
@@ -212,7 +219,7 @@ namespace lox
         public Void VisitReturnStmt(Stmt.Return stmt,
                                     in ReadOnlySpan<char> source)
         {
-            if(currentFunction == NONE)
+            if (currentFunction == NONE || currentFunction == INITIALIZER)
             {
                 this.Error(stmt.keyword.Line,
                            "Return statements are only allowed in functions and methods.");
