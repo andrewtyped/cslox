@@ -487,6 +487,11 @@ namespace lox
                                    "Only instances have properties.");
         }
 
+        public object? VisitThisExpr(Expr.This expr, in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitUnaryExpr(Expr.Unary expr,
                                       in ReadOnlySpan<char> source)
         {

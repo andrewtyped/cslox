@@ -137,6 +137,14 @@ namespace lox
                                      expr.value);
         }
 
+        public string VisitThisExpr(Expr.This expr,
+                                    in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize("this",
+                                     source,
+                                     Array.Empty<Expr>());
+        }
+
         public string VisitVariableExpr(Expr.Variable expr,
                                         in ReadOnlySpan<char> source)
         {

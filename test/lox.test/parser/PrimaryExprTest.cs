@@ -58,6 +58,12 @@ namespace lox.test.parser
         }
 
         [TestMethod]
+        public void CanParseThisExpression()
+        {
+
+        }
+
+        [TestMethod]
         public void ThrowsParseErrorIfNoValidExpressionDetected()
         {
 
