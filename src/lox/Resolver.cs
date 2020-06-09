@@ -219,7 +219,7 @@ namespace lox
         public Void VisitReturnStmt(Stmt.Return stmt,
                                     in ReadOnlySpan<char> source)
         {
-            if (currentFunction == NONE || currentFunction == INITIALIZER)
+            if (currentFunction == NONE)
             {
                 this.Error(stmt.keyword.Line,
                            "Return statements are only allowed in functions and methods.");
@@ -227,6 +227,12 @@ namespace lox
 
             if (stmt.value != null)
             {
+                if(currentFunction == INITIALIZER)
+                {
+                    this.Error(stmt.keyword.Line,
+                               "Cannot return a value from an initializer.");
+                }
+
                 this.Resolve(stmt.value,
                              source);
             }

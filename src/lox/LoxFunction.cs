@@ -91,9 +91,22 @@ namespace lox
                                    arguments[i]);
             }
 
+            try{
             interpreter.ExecuteBlock(this.declaration.body,
                                      environment,
                                      source);
+            }
+            catch(ReturnValue returnValue)
+            {
+                if (this.IsInitializer)
+                {
+                    return closure.GetAt("this",
+                                         thisToken,
+                                         0);
+                }
+
+                return returnValue.Value;
+            }
 
             if (this.IsInitializer)
             {

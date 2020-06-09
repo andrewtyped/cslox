@@ -135,7 +135,7 @@ print person2;
         }
 
         [TestMethod]
-        public void CannotReturnFromInit()
+        public void CannotReturnValueFromInit()
         {
             var source = @"
 class Person {
@@ -145,7 +145,24 @@ class Person {
 }
 ";
             this.AssertResolutionError(source,
-                                       "Return statements are only allowed in functions and methods.");
+                                       "Cannot return a value from an initializer.");
+        }
+
+        [TestMethod]
+        public void EmptyReturnFromInitReturnsInstance()
+        {
+            var source = @"
+class Person {
+  init() {
+    return;
+  }
+}
+
+var person = Person();
+print person;
+";
+            this.Interpret(source);
+            this.AssertPrints("Person instance");
         }
     }
 }
