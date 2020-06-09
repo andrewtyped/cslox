@@ -21,6 +21,8 @@ namespace lox
 
         private FunctionType currentFunction = NONE;
 
+        private ClassType currentClass = ClassType.NONE;
+
         internal readonly List<string> errors;
 
         #endregion
@@ -103,12 +105,16 @@ namespace lox
         public Void VisitClassStmt(Stmt.Class stmt,
                                    in ReadOnlySpan<char> source)
         {
+            ClassType originalClass = this.currentClass;
+            this.currentClass = ClassType.CLASS;
+
             this.Declare(stmt.name,
                          source);
             this.Define(stmt.name,
                         source);
 
             this.BeginScope();
+            
             this.scopes.Peek()["this"] = true;
 
             for(int i = 0; i < stmt.methods.Count; i++)
@@ -120,6 +126,7 @@ namespace lox
             }
 
             this.EndScope();
+            this.currentClass = originalClass;
 
             return default;
         }
@@ -233,6 +240,14 @@ namespace lox
         public object? VisitThisExpr(Expr.This expr,
                                      in ReadOnlySpan<char> source)
         {
+            if(this.currentClass == ClassType.NONE)
+            {
+                this.Error(expr.keyword.Line,
+                           "Cannot use 'this' outside of a class.");
+
+                return default;
+            }
+
             this.ResolveLocal(expr,
                               expr.keyword,
                               source);

@@ -75,5 +75,13 @@ person2.hello();
             this.AssertPrints("MyNameIs",
                               "Slim Shady");
         }
+
+        [TestMethod]
+        public void CannotUseThisOutsideAClass()
+        {
+            var source = "print this;";
+            this.AssertResolutionError(source,
+                                       "Cannot use 'this' outside of a class.");
+        }
     }
 }
