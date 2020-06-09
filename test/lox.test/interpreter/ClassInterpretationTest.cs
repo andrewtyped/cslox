@@ -37,5 +37,21 @@ print fooInstance;";
             this.Interpret(source);
             this.AssertPrints("foo instance");
         }
+
+        [TestMethod]
+        public void CanAccessClassMethod()
+        {
+            var source = @"
+class foo { 
+  hello() {
+    return ""world"";
+  } 
+}
+var fooInstance = foo();
+print fooInstance.hello();";
+
+            this.Interpret(source);
+            this.AssertPrints("world");
+        }
     }
 }

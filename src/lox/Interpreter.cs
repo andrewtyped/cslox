@@ -104,8 +104,24 @@ namespace lox
                                    in ReadOnlySpan<char> source)
         {
             this.Environment.Define(source, stmt.name, null);
+
+            Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
+
+            for(int i = 0; i < stmt.methods.Count; i++)
+            {
+                Stmt.Function method = stmt.methods[i];
+                LoxFunction loxFunction = new LoxFunction(source,
+                                                          stmt.methods[i],
+                                                          this.Environment);
+                string name = method.name.GetLexeme(source)
+                                    .ToString();
+                methods[name] = loxFunction;
+
+            }
+
             LoxClass @class = new LoxClass(stmt.name.GetLexeme(source)
-                                               .ToString());
+                                               .ToString(),
+                                           methods);
             this.Environment.Assign(source,
                                     stmt.name,
                                     @class);

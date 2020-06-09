@@ -4,6 +4,8 @@
     {
         NONE,
 
-        FUNCTION
+        FUNCTION,
+
+        METHOD
     }
 }

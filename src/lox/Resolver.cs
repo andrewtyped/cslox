@@ -107,6 +107,15 @@ namespace lox
                          source);
             this.Define(stmt.name,
                         source);
+
+            for(int i = 0; i < stmt.methods.Count; i++)
+            {
+                FunctionType declaration = FunctionType.METHOD;
+                this.ResolveFunction(stmt.methods[i],
+                                     declaration,
+                                     source);
+            }
+
             return default;
         }
 

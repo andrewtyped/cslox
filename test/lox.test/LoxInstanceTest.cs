@@ -1,5 +1,6 @@
 ﻿using lox.constants;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace lox.test
 {
@@ -11,7 +12,7 @@ namespace lox.test
         [TestMethod]
         public void LoxInstanceStoresALoxClass()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             var instance = new LoxInstance(@class);
             Assert.AreEqual(instance.Class,
                             @class);
@@ -20,7 +21,7 @@ namespace lox.test
         [TestMethod]
         public void LoxInstanceToStringReturnsClassNameAndIndicatesInstance()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             var instance = new LoxInstance(@class);
             Assert.AreEqual("foo instance",
                             instance.ToString());
@@ -30,7 +31,7 @@ namespace lox.test
         [ExpectedException(typeof(RuntimeError))]
         public void LoxInstanceThrowsRuntimeErrorWhenGettingUndefinedFieldValue()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             var instance = new LoxInstance(@class);
             var source = "bar";
             var token = new Token(0,
@@ -45,7 +46,7 @@ namespace lox.test
         [TestMethod]
         public void LoxInstanceSetsFieldValue()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             var instance = new LoxInstance(@class);
             var source = "bar";
             var token = new Token(0,
@@ -63,6 +64,12 @@ namespace lox.test
                             value);
 
         }
+
+        private LoxClass GetLoxClass()
+        {
+            return new LoxClass("foo",
+                                new Dictionary<string, LoxFunction>());
+        } 
 
         #endregion
     }

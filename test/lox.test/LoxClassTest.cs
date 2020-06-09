@@ -12,15 +12,55 @@ namespace lox.test
         [TestMethod]
         public void LoxClassHasAName()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             Assert.AreEqual("foo",
                             @class.Name);
         }
 
         [TestMethod]
+        public void LoxClassHasMethods()
+        {
+            var function = new LoxFunction("source",
+                                           new Stmt.Function(new Token(),
+                                                             new List<Token>(),
+                                                             new List<Stmt>()),
+                                           new Environment());
+            var methodMap = new Dictionary<string, LoxFunction>
+                            {
+                                ["bar"] = function
+                            };
+            var @class = new LoxClass("foo",
+                                      methodMap);
+
+            Assert.AreSame(function,
+                           @class.Methods["bar"]);
+        }
+
+        [TestMethod]
+        public void LoxClassCanFindMethods()
+        {
+            var function = new LoxFunction("source",
+                                           new Stmt.Function(new Token(),
+                                                             new List<Token>(),
+                                                             new List<Stmt>()),
+                                           new Environment());
+            var methodMap = new Dictionary<string, LoxFunction>
+                            {
+                                ["bar"] = function
+                            };
+            var @class = new LoxClass("foo",
+                                      methodMap);
+
+            var method = @class.FindMethod("bar");
+
+            Assert.AreSame(method,
+                           @class.Methods["bar"]);
+        }
+
+        [TestMethod]
         public void LoxClassToStringIsLoxClassName()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             Assert.AreEqual("foo",
                             @class.ToString());
         }
@@ -28,9 +68,15 @@ namespace lox.test
         [TestMethod]
         public void LoxClassHasArity0()
         {
-            var @class = new LoxClass("foo");
+            var @class = this.GetLoxClass();
             Assert.AreEqual(0,
                             @class.Arity());
+        }
+
+        private LoxClass GetLoxClass()
+        {
+            return new LoxClass("foo",
+                                new Dictionary<string, LoxFunction>());
         }
     }
 }

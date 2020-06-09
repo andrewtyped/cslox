@@ -10,9 +10,11 @@ namespace lox
     {
         #region Constructors
 
-        public LoxClass(string name)
+        public LoxClass(string name,
+                        Dictionary<string, LoxFunction> methods)
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Methods = methods ?? throw new ArgumentNullException(nameof(methods));
         }
 
         #endregion
@@ -23,6 +25,14 @@ namespace lox
         /// Get the name of the lox class.
         /// </summary>
         public string Name
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Get the methods defined on this class.
+        /// </summary>
+        internal IReadOnlyDictionary<string, LoxFunction> Methods
         {
             get;
         }
@@ -50,6 +60,13 @@ namespace lox
         {
             LoxInstance instance = new LoxInstance(this);
             return instance;
+        }
+
+        internal LoxFunction? FindMethod(string name)
+        {
+            this.Methods.TryGetValue(name,
+                                     out LoxFunction? loxFunction);
+            return loxFunction;
         }
 
         #endregion
