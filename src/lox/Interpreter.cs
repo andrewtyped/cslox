@@ -110,11 +110,12 @@ namespace lox
             for(int i = 0; i < stmt.methods.Count; i++)
             {
                 Stmt.Function method = stmt.methods[i];
-                LoxFunction loxFunction = new LoxFunction(source,
-                                                          stmt.methods[i],
-                                                          this.Environment);
                 string name = method.name.GetLexeme(source)
                                     .ToString();
+                LoxFunction loxFunction = new LoxFunction(source,
+                                                          method,
+                                                          this.Environment,
+                                                          name == "init");
                 methods[name] = loxFunction;
 
             }
@@ -133,7 +134,8 @@ namespace lox
         {
             LoxFunction loxFunction = new LoxFunction(source,
                                                       stmt,
-                                                      this.Environment);
+                                                      this.Environment,
+                                                      isInitializer: false);
             Environment.Define(source,
                                stmt.name,
                                loxFunction);

@@ -24,7 +24,8 @@ namespace lox.test
                                            new Stmt.Function(new Token(),
                                                              new List<Token>(),
                                                              new List<Stmt>()),
-                                           new Environment());
+                                           new Environment(),
+                                           false);
             var methodMap = new Dictionary<string, LoxFunction>
                             {
                                 ["bar"] = function
@@ -43,7 +44,8 @@ namespace lox.test
                                            new Stmt.Function(new Token(),
                                                              new List<Token>(),
                                                              new List<Stmt>()),
-                                           new Environment());
+                                           new Environment(),
+                                           false);
             var methodMap = new Dictionary<string, LoxFunction>
                             {
                                 ["bar"] = function

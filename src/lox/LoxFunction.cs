@@ -11,6 +11,11 @@ namespace lox
     /// </summary>
     public class LoxFunction : ILoxCallable
     {
+        public bool IsInitializer
+        {
+            get;
+        }
+
         #region Fields
 
         private readonly Function declaration;
@@ -30,12 +35,15 @@ namespace lox
 
         public LoxFunction(in ReadOnlySpan<char> source,
                            Function declaration,
-                           Environment closure)
+                           Environment closure,
+                           bool isInitializer)
         {
             if (declaration == null)
             {
                 throw new ArgumentNullException(paramName: nameof(declaration));
             }
+
+            this.IsInitializer = isInitializer;
 
             this.declaration = declaration;
             this.closure = closure ?? throw new ArgumentNullException(nameof(closure));
@@ -64,7 +72,8 @@ namespace lox
                                instance);
             return new LoxFunction(source,
                                    this.declaration,
-                                   environment);
+                                   environment,
+                                   this.IsInitializer);
         }
 
         public object? Call(Interpreter interpreter,
@@ -86,6 +95,12 @@ namespace lox
                                      environment,
                                      source);
 
+            if (this.IsInitializer)
+            {
+                return closure.GetAt("this",
+                                     thisToken,
+                                     0);
+            }
             return null;
         }
 

@@ -117,5 +117,21 @@ print person.name;
             this.Interpret(source);
             this.AssertPrints("Andrew");
         }
+
+        [TestMethod]
+        public void InvokingInitReturnsInstance()
+        {
+            var source = @"
+class Person {
+  init() {}
+}
+
+var person = Person();
+var person2 = person.init();
+print person2;
+";
+            this.Interpret(source);
+            this.AssertPrints("Person instance");
+        }
     }
 }
