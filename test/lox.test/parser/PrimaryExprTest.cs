@@ -60,7 +60,8 @@ namespace lox.test.parser
         [TestMethod]
         public void CanParseThisExpression()
         {
-
+            var source = "this";
+            var thisExpr = this.AssertExpr<This>(source);
         }
 
         [TestMethod]
