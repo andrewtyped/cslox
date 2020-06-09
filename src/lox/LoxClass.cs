@@ -51,6 +51,13 @@ namespace lox
 
         public int Arity()
         {
+            LoxFunction? initializer = this.FindMethod("init");
+
+            if(initializer != null)
+            {
+                return initializer.Arity();
+            }
+
             return 0;
         }
 
@@ -58,7 +65,18 @@ namespace lox
                             List<object?> arguments,
                             in ReadOnlySpan<char> source)
         {
+            LoxFunction? initializer = this.FindMethod("init");
             LoxInstance instance = new LoxInstance(this);
+
+            if (initializer != null)
+            {
+                LoxFunction? boundInitializer = initializer.Bind(instance,
+                                                                 source);
+                boundInitializer.Call(interpreter,
+                                      arguments,
+                                      source);
+            }
+
             return instance;
         }
 

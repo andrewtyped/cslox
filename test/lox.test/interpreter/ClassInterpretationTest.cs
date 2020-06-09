@@ -83,5 +83,39 @@ person2.hello();
             this.AssertResolutionError(source,
                                        "Cannot use 'this' outside of a class.");
         }
+
+        [TestMethod]
+        public void CanUseConstructorToInitializeClass()
+        {
+            var source = @"
+class Person {
+  init() {
+    this.name = ""Andrew"";
+  }
+}
+
+var person = Person();
+print person.name;
+";
+            this.Interpret(source);
+            this.AssertPrints("Andrew");
+        }
+
+        [TestMethod]
+        public void CanUseConstructorWithParametersToInitializeClass()
+        {
+            var source = @"
+class Person {
+  init(name) {
+    this.name = name;
+  }
+}
+
+var person = Person(""Andrew"");
+print person.name;
+";
+            this.Interpret(source);
+            this.AssertPrints("Andrew");
+        }
     }
 }
