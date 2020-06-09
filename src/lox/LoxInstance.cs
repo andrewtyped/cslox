@@ -56,9 +56,10 @@ namespace lox
 
             LoxFunction? method = this.Class.FindMethod(nameLexeme);
 
-            if(method != null)
+            if (method != null)
             {
-                return method;
+                return method.Bind(this,
+                                   source);
             }
 
             throw new RuntimeError(name,

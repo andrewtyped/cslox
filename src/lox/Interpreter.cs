@@ -266,7 +266,8 @@ namespace lox
         public object? VisitVariableExpr(Expr.Variable expr,
                                          in ReadOnlySpan<char> source)
         {
-            return this.LookupVariable(expr,
+            return this.LookupVariable(expr.name,
+                                       expr,
                                        source);
         }
 
@@ -489,7 +490,9 @@ namespace lox
 
         public object? VisitThisExpr(Expr.This expr, in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            return this.LookupVariable(expr.keyword,
+                                       expr,
+                                       source);
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr,
@@ -512,19 +515,20 @@ namespace lox
 
         #region Utilities
 
-        private object? LookupVariable(Expr.Variable expr,
+        private object? LookupVariable(Token name,
+                                       Expr expr,
                                        in ReadOnlySpan<char> source)
         {
             if (this.locals.TryGetValue(expr,
                                         out int distance))
             {
                 return this.Environment.GetAt(source,
-                                              expr.name,
+                                              name,
                                               distance);
             }
 
             return this.globals.Get(source,
-                                    expr.name);
+                                    name);
         }
 
 

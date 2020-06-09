@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lox.constants;
+using System;
 using System.Collections.Generic;
 
 using static lox.Stmt;
@@ -17,6 +18,11 @@ namespace lox
         private readonly Environment closure;
 
         private readonly string functionName;
+
+        private static readonly Token thisToken = new Token(0,
+                                                            4,
+                                                            0,
+                                                            TokenType.THIS);
 
         #endregion
 
@@ -48,6 +54,18 @@ namespace lox
         }
 
         public int Arity() => this.declaration.parameters.Count;
+
+        public LoxFunction Bind(LoxInstance instance,
+                                in ReadOnlySpan<char> source)
+        {
+            Environment environment = new Environment(this.closure);
+            environment.Define("this",
+                               thisToken,
+                               instance);
+            return new LoxFunction(source,
+                                   this.declaration,
+                                   environment);
+        }
 
         public object? Call(Interpreter interpreter,
                             List<object?> arguments,

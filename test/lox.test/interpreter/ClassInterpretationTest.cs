@@ -53,5 +53,27 @@ print fooInstance.hello();";
             this.Interpret(source);
             this.AssertPrints("world");
         }
+
+        [TestMethod]
+        public void CanUseThisToAccessInstanceState()
+        {
+            var source = @"
+class Person {
+  hello(){
+    print this.name;
+  }
+}
+
+var person1 = Person();
+person1.name = ""MyNameIs"";
+var person2 = Person();
+person2.name = ""Slim Shady"";
+person1.hello();
+person2.hello();
+";
+            this.Interpret(source);
+            this.AssertPrints("MyNameIs",
+                              "Slim Shady");
+        }
     }
 }

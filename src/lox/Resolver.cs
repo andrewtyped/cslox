@@ -108,13 +108,18 @@ namespace lox
             this.Define(stmt.name,
                         source);
 
+            this.BeginScope();
+            this.scopes.Peek()["this"] = true;
+
             for(int i = 0; i < stmt.methods.Count; i++)
             {
-                FunctionType declaration = FunctionType.METHOD;
+                FunctionType declaration = METHOD;
                 this.ResolveFunction(stmt.methods[i],
                                      declaration,
                                      source);
             }
+
+            this.EndScope();
 
             return default;
         }
@@ -228,7 +233,10 @@ namespace lox
         public object? VisitThisExpr(Expr.This expr,
                                      in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.ResolveLocal(expr,
+                              expr.keyword,
+                              source);
+            return default;
         }
 
         public object? VisitUnaryExpr(Expr.Unary expr,
