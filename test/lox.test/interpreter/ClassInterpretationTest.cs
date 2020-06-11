@@ -173,5 +173,16 @@ print person;
             this.AssertResolutionError(source,
                                        "A class cannot inherit from itself.");
         }
+
+        [TestMethod]
+        public void SuperclassCannotBeANonClass()
+        {
+            var source = @"var bar = 1;
+class foo < bar { }";
+
+            this.AssertRuntimeError(source,
+                                    constants.TokenType.IDENTIFIER,
+                                    "Superclass must be a class.");
+        }
     }
 }

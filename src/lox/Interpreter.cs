@@ -103,6 +103,24 @@ namespace lox
         public Void VisitClassStmt(Stmt.Class stmt,
                                    in ReadOnlySpan<char> source)
         {
+            object? superclass = null;
+
+            if(stmt.superclass != null)
+            {
+                superclass = this.Evaluate(stmt.superclass,
+                                           source);
+
+                if (superclass is LoxClass loxSuperclass)
+                {
+
+                }
+                else
+                {
+                    throw new RuntimeError(stmt.superclass.name,
+                                           "Superclass must be a class.");
+                }
+            }
+
             this.Environment.Define(source, stmt.name, null);
 
             Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
