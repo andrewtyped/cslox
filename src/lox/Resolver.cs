@@ -113,6 +113,12 @@ namespace lox
             this.Define(stmt.name,
                         source);
 
+            if(stmt.superclass != null)
+            {
+                this.Resolve(stmt.superclass,
+                             source);
+            }
+
             this.BeginScope();
             
             this.scopes.Peek()["this"] = true;
