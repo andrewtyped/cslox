@@ -18,6 +18,14 @@ namespace lox.test
         }
 
         [TestMethod]
+        public void LoxClassHasASuperclass()
+        {
+            var @class = this.GetLoxClass();
+            Assert.AreEqual("bar",
+                            @class.Superclass!.Name);
+        }
+
+        [TestMethod]
         public void LoxClassHasMethods()
         {
             var function = new LoxFunction("source",
@@ -31,6 +39,7 @@ namespace lox.test
                                 ["bar"] = function
                             };
             var @class = new LoxClass("foo",
+                                      null,
                                       methodMap);
 
             Assert.AreSame(function,
@@ -51,6 +60,7 @@ namespace lox.test
                                 ["bar"] = function
                             };
             var @class = new LoxClass("foo",
+                                      null,
                                       methodMap);
 
             var method = @class.FindMethod("bar");
@@ -77,7 +87,11 @@ namespace lox.test
 
         private LoxClass GetLoxClass()
         {
+            var superclass = new LoxClass("bar",
+                                          null,
+                                          new Dictionary<string, LoxFunction>());
             return new LoxClass("foo",
+                                superclass,
                                 new Dictionary<string, LoxFunction>());
         }
     }

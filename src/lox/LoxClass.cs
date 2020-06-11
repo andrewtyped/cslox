@@ -11,9 +11,11 @@ namespace lox
         #region Constructors
 
         public LoxClass(string name,
+                        LoxClass? superclass,
                         Dictionary<string, LoxFunction> methods)
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Superclass = superclass;
             this.Methods = methods ?? throw new ArgumentNullException(nameof(methods));
         }
 
@@ -25,6 +27,14 @@ namespace lox
         /// Get the name of the lox class.
         /// </summary>
         public string Name
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Get the (optional) superclass of this class.
+        /// </summary>
+        internal LoxClass? Superclass
         {
             get;
         }

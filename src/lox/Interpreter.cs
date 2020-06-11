@@ -104,15 +104,16 @@ namespace lox
                                    in ReadOnlySpan<char> source)
         {
             object? superclass = null;
+            LoxClass? loxSuperclass = null;
 
             if(stmt.superclass != null)
             {
                 superclass = this.Evaluate(stmt.superclass,
                                            source);
 
-                if (superclass is LoxClass loxSuperclass)
+                if (superclass is LoxClass castLoxSuperclass)
                 {
-
+                    loxSuperclass = castLoxSuperclass;
                 }
                 else
                 {
@@ -140,6 +141,7 @@ namespace lox
 
             LoxClass @class = new LoxClass(stmt.name.GetLexeme(source)
                                                .ToString(),
+                                           loxSuperclass,
                                            methods);
             this.Environment.Assign(source,
                                     stmt.name,

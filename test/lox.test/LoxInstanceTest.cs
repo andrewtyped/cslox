@@ -68,6 +68,7 @@ namespace lox.test
         private LoxClass GetLoxClass()
         {
             return new LoxClass("foo",
+                                null,
                                 new Dictionary<string, LoxFunction>());
         } 
 
