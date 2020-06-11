@@ -103,6 +103,7 @@ namespace lox
                          "Expect '}' after class methods");
 
             return new Class(name,
+                             null,
                              methods);
         }
 
