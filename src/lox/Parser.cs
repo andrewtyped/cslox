@@ -84,6 +84,18 @@ namespace lox
             Token name = this.Consume(source,
                                       IDENTIFIER,
                                       "Expect name after class declaration.");
+
+            Expr.Variable? superclass = null;
+
+            if (this.Match(source,
+                           LESS))
+            {
+                Token superClassName = this.Consume(source,
+                                                    TokenType.IDENTIFIER,
+                                                    "Expect identifier after '<'.");
+                superclass = new Expr.Variable(superClassName);
+            }
+
             this.Consume(source,
                          LEFT_BRACE,
                          "Expect '{' after class name.");
@@ -103,7 +115,7 @@ namespace lox
                          "Expect '}' after class methods");
 
             return new Class(name,
-                             null,
+                             superclass,
                              methods);
         }
 

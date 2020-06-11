@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using static lox.Expr;
 using static lox.Stmt;
 
 namespace lox.test.parser
@@ -25,6 +26,30 @@ class foo {
                                   .ToString());
             Assert.AreEqual(2,
                             @class.methods.Count);
+        }
+
+        [TestMethod]
+        public void CanParseSuperClassDeclaration()
+        {
+            var source = @"
+class foo < bar {
+  hello() {}
+
+  world() {}
+}
+";
+            var @class = this.AssertStmt<Class>(source);
+            Assert.AreEqual("foo",
+                            @class.name.GetLexeme(source)
+                                  .ToString());
+            Assert.AreEqual(2,
+                            @class.methods.Count);
+
+            var superclass = this.AssertExpr<Variable>(@class.superclass);
+
+            Assert.AreEqual("bar",
+                            superclass.name.GetLexeme(source)
+                                      .ToString());
         }
 
         #endregion
