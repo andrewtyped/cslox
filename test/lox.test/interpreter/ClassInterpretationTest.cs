@@ -164,5 +164,14 @@ print person;
             this.Interpret(source);
             this.AssertPrints("Person instance");
         }
+
+        [TestMethod]
+        public void ClassCannotInheritFromItself()
+        {
+            var source = "class foo < foo { }";
+
+            this.AssertResolutionError(source,
+                                       "A class cannot inherit from itself.");
+        }
     }
 }

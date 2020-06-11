@@ -115,6 +115,14 @@ namespace lox
 
             if(stmt.superclass != null)
             {
+                if (stmt.name.GetLexeme(source)
+                        .Equals(stmt.superclass.name.GetLexeme(source),
+                                StringComparison.Ordinal))
+                {
+                    this.Error(stmt.superclass.name.Line,
+                               "A class cannot inherit from itself.");
+                }
+
                 this.Resolve(stmt.superclass,
                              source);
             }
