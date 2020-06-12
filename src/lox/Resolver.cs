@@ -264,6 +264,12 @@ namespace lox
             return default;
         }
 
+        public object? VisitSuperExpr(Expr.Super exper,
+                                      in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitThisExpr(Expr.This expr,
                                      in ReadOnlySpan<char> source)
         {

@@ -137,6 +137,14 @@ namespace lox
                                      expr.value);
         }
 
+        public string VisitSuperExpr(Expr.Super expr,
+                                     in ReadOnlySpan<char> source)
+        {
+            return this.Parenthesize($"super {expr.method.GetLexeme(source).ToString()}",
+                                     source,
+                                     Array.Empty<Expr>());
+        }
+
         public string VisitThisExpr(Expr.This expr,
                                     in ReadOnlySpan<char> source)
         {

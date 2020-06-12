@@ -19,6 +19,7 @@ namespace lox
             R VisitLiteralExpr(Literal expr, in ReadOnlySpan<char> source);
             R VisitLogicalExpr(Logical expr, in ReadOnlySpan<char> source);
             R VisitSetExpr(Set expr, in ReadOnlySpan<char> source);
+            R VisitSuperExpr(Super expr, in ReadOnlySpan<char> source);
             R VisitThisExpr(This expr, in ReadOnlySpan<char> source);
             R VisitUnaryExpr(Unary expr, in ReadOnlySpan<char> source);
             R VisitVariableExpr(Variable expr, in ReadOnlySpan<char> source);
@@ -178,6 +179,25 @@ namespace lox
             public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
             {
                 return visitor.VisitSetExpr(this, source);
+            }
+        }
+
+
+        public class Super : Expr
+        {
+            public Super( Token keyword, Token method )
+            {
+                this.keyword = keyword;
+                this.method = method;
+            }
+
+            public readonly Token keyword;
+
+            public readonly Token method;
+
+            public override R Accept<R>(IVisitor<R> visitor, in ReadOnlySpan<char> source)
+            {
+                return visitor.VisitSuperExpr(this, source);
             }
         }
 

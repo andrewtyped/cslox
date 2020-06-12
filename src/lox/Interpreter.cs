@@ -510,6 +510,12 @@ namespace lox
                                    "Only instances have properties.");
         }
 
+        public object? VisitSuperExpr(Expr.Super expr,
+                                      in ReadOnlySpan<char> source)
+        {
+            throw new NotImplementedException();
+        }
+
         public object? VisitThisExpr(Expr.This expr, in ReadOnlySpan<char> source)
         {
             return this.LookupVariable(expr.keyword,
