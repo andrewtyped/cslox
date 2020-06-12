@@ -239,5 +239,13 @@ class Foo {
             this.AssertResolutionError(source,
                                        "'super' can only be used in a subclass.");
         }
+
+        [TestMethod]
+        public void CannotUseSuperWhenNotInAClass()
+        {
+            var source = @"super.foo;";
+            this.AssertResolutionError(source,
+                                       "Cannot use 'super' outside a class.");
+        }
     }
 }

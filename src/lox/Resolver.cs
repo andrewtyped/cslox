@@ -278,7 +278,12 @@ namespace lox
         public object? VisitSuperExpr(Expr.Super expr,
                                       in ReadOnlySpan<char> source)
         {
-            if(this.currentClass == ClassType.CLASS)
+            if(this.currentClass == ClassType.NONE)
+            {
+                this.Error(expr.keyword.Line,
+                           "Cannot use 'super' outside a class.");
+            }
+            else if(this.currentClass == ClassType.CLASS)
             {
                 this.Error(expr.keyword.Line,
                            "'super' can only be used in a subclass.");
