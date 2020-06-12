@@ -225,5 +225,19 @@ BostonCreme().cook();
             this.AssertPrints("Fry until golden brown.",
                               "Pipe full of custard and coat with chocolate.");
         }
+
+        [TestMethod]
+        public void CannotUseSuperWhenNotInASubclass()
+        {
+            var source = @"
+class Foo {
+  bar() {
+    super.baz();
+  }
+}
+";
+            this.AssertResolutionError(source,
+                                       "'super' can only be used in a subclass.");
+        }
     }
 }

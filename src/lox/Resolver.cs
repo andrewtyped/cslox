@@ -115,6 +115,8 @@ namespace lox
 
             if(stmt.superclass != null)
             {
+                this.currentClass = ClassType.SUBCLASS;
+
                 if (stmt.name.GetLexeme(source)
                         .Equals(stmt.superclass.name.GetLexeme(source),
                                 StringComparison.Ordinal))
@@ -276,6 +278,12 @@ namespace lox
         public object? VisitSuperExpr(Expr.Super expr,
                                       in ReadOnlySpan<char> source)
         {
+            if(this.currentClass == ClassType.CLASS)
+            {
+                this.Error(expr.keyword.Line,
+                           "'super' can only be used in a subclass.");
+            }
+
             this.ResolveLocal(expr,
                               expr.keyword,
                 source);

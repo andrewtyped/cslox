@@ -8,6 +8,8 @@ namespace lox.constants
     {
         NONE,
 
-        CLASS
+        CLASS,
+
+        SUBCLASS
     }
 }
