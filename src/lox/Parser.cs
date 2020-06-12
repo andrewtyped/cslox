@@ -670,6 +670,19 @@ namespace lox
                 return new This(this.Previous(source));
             }
 
+            if(this.Match(source, SUPER))
+            {
+                Token super = this.Previous(source);
+                this.Consume(source,
+                             DOT,
+                             "Expect '.' after super.");
+                Token method = this.Consume(source,
+                                            IDENTIFIER,
+                                            "Expect identifier after 'super.'.");
+                return new Super(super,
+                                 method);
+            }
+
             if (this.Match(source,
                            LEFT_PAREN))
             {

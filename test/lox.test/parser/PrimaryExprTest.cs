@@ -58,6 +58,16 @@ namespace lox.test.parser
         }
 
         [TestMethod]
+        public void CanParseSuperExpression()
+        {
+            var source = "super.foo";
+            var superExpr = this.AssertExpr<Super>(source);
+            Assert.AreEqual("foo",
+                            superExpr.method.GetLexeme(source)
+                                     .ToString());
+        }
+
+        [TestMethod]
         public void CanParseThisExpression()
         {
             var source = "this";
