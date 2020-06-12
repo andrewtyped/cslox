@@ -94,6 +94,12 @@ namespace lox
         {
             this.Methods.TryGetValue(name,
                                      out LoxFunction? loxFunction);
+
+            if(loxFunction == null && this.Superclass != null)
+            {
+                loxFunction = this.Superclass.FindMethod(name);
+            }
+
             return loxFunction;
         }
 

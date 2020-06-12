@@ -184,5 +184,23 @@ class foo < bar { }";
                                     constants.TokenType.IDENTIFIER,
                                     "Superclass must be a class.");
         }
+
+        [TestMethod]
+        public void SubclassCanAccessSuperclassMethods()
+        {
+            var source = @"
+class Doughnut {
+  cook() {
+    print ""fry to a golden brown."";
+  }
+}
+
+class BostonCreme < Doughnut {}
+
+BostonCreme().cook();
+";
+            this.Interpret(source);
+            this.AssertPrints("fry to a golden brown.");
+        }
     }
 }
