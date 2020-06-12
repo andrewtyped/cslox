@@ -125,6 +125,9 @@ namespace lox
 
                 this.Resolve(stmt.superclass,
                              source);
+
+                this.BeginScope();
+                this.scopes.Peek()["super"] = true;
             }
 
             this.BeginScope();
@@ -147,6 +150,12 @@ namespace lox
             }
 
             this.EndScope();
+
+            if(stmt.superclass != null)
+            {
+                this.EndScope();
+            }
+
             this.currentClass = originalClass;
 
             return default;
@@ -264,10 +273,13 @@ namespace lox
             return default;
         }
 
-        public object? VisitSuperExpr(Expr.Super exper,
+        public object? VisitSuperExpr(Expr.Super expr,
                                       in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            this.ResolveLocal(expr,
+                              expr.keyword,
+                source);
+            return null;
         }
 
         public object? VisitThisExpr(Expr.This expr,

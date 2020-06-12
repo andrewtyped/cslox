@@ -1,4 +1,5 @@
-﻿using lox.loxFunctions;
+﻿using lox.constants;
+using lox.loxFunctions;
 using System;
 using System.Collections.Generic;
 
@@ -124,6 +125,19 @@ namespace lox
 
             this.Environment.Define(source, stmt.name, null);
 
+            Environment classEnvironment = this.Environment;
+
+            if(stmt.superclass != null)
+            {
+                this.Environment = new Environment(this.Environment);
+                this.Environment.Define("super",
+                                        new Token(0,
+                                                  5,
+                                                  0,
+                                                  TokenType.SUPER),
+                                        loxSuperclass);
+            }
+
             Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
 
             for(int i = 0; i < stmt.methods.Count; i++)
@@ -143,6 +157,12 @@ namespace lox
                                                .ToString(),
                                            loxSuperclass,
                                            methods);
+
+            if(stmt.superclass != null)
+            {
+                this.Environment = classEnvironment;
+            }
+
             this.Environment.Assign(source,
                                     stmt.name,
                                     @class);
@@ -513,7 +533,27 @@ namespace lox
         public object? VisitSuperExpr(Expr.Super expr,
                                       in ReadOnlySpan<char> source)
         {
-            throw new NotImplementedException();
+            int distance = this.locals[expr];
+            LoxClass superclass = (LoxClass)this.Environment.GetAt(source,
+                                                                   expr.keyword,
+                                                                   distance)!;
+            LoxInstance thisObject = (LoxInstance)this.Environment.GetAt("this",
+                                                                         new Token(0,
+                                                                                   4,
+                                                                                   0,
+                                                                                   TokenType.THIS),
+                                                                         distance - 1)!;
+            LoxFunction? method = superclass.FindMethod(expr.method.GetLexeme(source)
+                                                            .ToString());
+
+            if(method == null)
+            {
+                throw new RuntimeError(expr.method,
+                                       $"Undefined property '{expr.method.GetLexeme(source).ToString()}'");
+            }
+
+            return method.Bind(thisObject,
+                               source);
         }
 
         public object? VisitThisExpr(Expr.This expr, in ReadOnlySpan<char> source)

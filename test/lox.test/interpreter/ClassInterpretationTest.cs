@@ -202,5 +202,28 @@ BostonCreme().cook();
             this.Interpret(source);
             this.AssertPrints("fry to a golden brown.");
         }
+
+        [TestMethod]
+        public void SubclassCanCallSuperclassMethodExplicitly()
+        {
+            var source = @"class Doughnut {
+  cook() {
+    print ""Fry until golden brown."";
+        }
+    }
+
+    class BostonCream < Doughnut {
+        cook() {
+            super.cook();
+            print ""Pipe full of custard and coat with chocolate."";
+        }
+    }
+
+    BostonCream().cook();";
+
+            this.Interpret(source);
+            this.AssertPrints("Fry until golden brown.",
+                              "Pipe full of custard and coat with chocolate.");
+        }
     }
 }
